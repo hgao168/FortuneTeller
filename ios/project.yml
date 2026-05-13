@@ -3,6 +3,8 @@ options:
   bundleIdPrefix: com.example.fortuneteller
   deploymentTarget:
     iOS: "16.0"
+  developmentLanguage: en
+  defaultConfig: Debug
 settings:
   base:
     SWIFT_VERSION: "5.9"
@@ -32,3 +34,14 @@ targets:
           BACKEND_BASE_URL: "http://localhost:8000"
         Release:
           BACKEND_BASE_URL: "https://YOUR-PROD-API.example.com"
+  FortuneTellerTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - FortuneTellerTests
+    dependencies:
+      - target: FortuneTeller
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.fortuneteller.tests
+        GENERATE_INFOPLIST_FILE: YES

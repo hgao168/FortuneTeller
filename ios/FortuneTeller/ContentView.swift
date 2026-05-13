@@ -1,8 +1,24 @@
 import SwiftUI
-import UIKit
 
 struct ContentView: View {
-    @State private var scope: ReadingScope = .year
+    @StateObject private var store = PalmStore()
+
+    var body: some View {
+        TabView {
+            ReadTabView()
+                .tabItem { Label("nav.read", systemImage: "hand.raised.fill") }
+            MatchView()
+                .tabItem { Label("nav.match", systemImage: "person.2.fill") }
+            HistoryView()
+                .tabItem { Label("nav.history", systemImage: "clock.arrow.circlepath") }
+        }
+        .environmentObject(store)
+    }
+}
+
+struct ReadTabView: View {
+    @EnvironmentObject var store: PalmStore
+    @State private var scope: ReadingScope = .today
     @State private var showCamera = false
     @State private var showPicker = false
     @State private var capturedImage: UIImage?
@@ -34,7 +50,7 @@ struct ContentView: View {
                                 if isAnalyzing {
                                     ProgressView().tint(.white)
                                 } else {
-                                    Text("Read My Palm")
+                                    Text("button.analyze")
                                         .font(.headline)
                                 }
                             }
@@ -91,10 +107,10 @@ struct ContentView: View {
         VStack(spacing: 8) {
             Text("✋")
                 .font(.system(size: 64))
-            Text("Discover what your palm reveals")
+            Text("app.tagline")
                 .font(.title3.weight(.semibold))
                 .multilineTextAlignment(.center)
-            Text("Live capture or upload a photo. Choose the time horizon for your reading.")
+            Text("app.subtitle")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -103,12 +119,12 @@ struct ContentView: View {
     }
 
     private var scopePicker: some View {
-        Picker("Reading Scope", selection: $scope) {
+        Picker("reading.scope.label", selection: $scope) {
             ForEach(ReadingScope.allCases) { value in
-                Text(value.displayName).tag(value)
+                Text(value.localizedKey).tag(value)
             }
         }
-        .pickerStyle(.segmented)
+        .pickerStyle(.menu)
     }
 
     private var actionButtons: some View {
@@ -118,7 +134,7 @@ struct ContentView: View {
                 reading = nil
                 showCamera = true
             } label: {
-                Label("Use Live Camera", systemImage: "camera.fill")
+                Label("button.camera", systemImage: "camera.fill")
                     .frame(maxWidth: .infinity)
                     .padding()
             }
@@ -131,7 +147,7 @@ struct ContentView: View {
                 reading = nil
                 showPicker = true
             } label: {
-                Label("Upload Palm Photo", systemImage: "photo.on.rectangle")
+                Label("button.photo", systemImage: "photo.on.rectangle")
                     .frame(maxWidth: .infinity)
                     .padding()
             }

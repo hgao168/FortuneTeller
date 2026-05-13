@@ -4,6 +4,9 @@ struct ReadingResultView: View {
     let response: PalmReadingResponse
     let palmImage: UIImage?
 
+    @EnvironmentObject var store: PalmStore
+    @State private var saved = false
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -18,7 +21,7 @@ struct ReadingResultView: View {
                 }
 
                 HStack {
-                    Text(response.scope.displayName)
+                    Text(response.scope.localizedKey)
                         .font(.subheadline.weight(.semibold))
                         .padding(.vertical, 6)
                         .padding(.horizontal, 12)
@@ -48,7 +51,7 @@ struct ReadingResultView: View {
 
                 if !response.advice.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Advice")
+                        Text("section.advice")
                             .font(.headline)
                         ForEach(response.advice, id: \.self) { item in
                             HStack(alignment: .top, spacing: 8) {
@@ -71,6 +74,21 @@ struct ReadingResultView: View {
             }
             .padding()
         }
-        .navigationTitle("Your Reading")
+        .navigationTitle(Text("nav.reading"))
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    let thumb = palmImage?.jpegData(compressionQuality: 0.5)
+                    store.save(SavedReading(palm: response, thumbnailData: thumb))
+                    saved = true
+                } label: {
+                    Label(
+                        saved ? String(localized: "button.saved") : String(localized: "button.save"),
+                        systemImage: saved ? "checkmark.circle.fill" : "square.and.arrow.down"
+                    )
+                }
+                .disabled(saved)
+            }
+        }
     }
 }

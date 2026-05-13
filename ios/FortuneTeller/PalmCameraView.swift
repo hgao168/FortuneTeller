@@ -87,14 +87,14 @@ final class PalmCameraViewController: UIViewController, AVCapturePhotoCaptureDel
 
         let cancelButton = UIButton(type: .system)
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
-        cancelButton.setTitle("Cancel", for: .normal)
+        cancelButton.setTitle(NSLocalizedString("camera.cancel", comment: ""), for: .normal)
         cancelButton.setTitleColor(.white, for: .normal)
         cancelButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         view.addSubview(cancelButton)
 
         let guide = UILabel()
         guide.translatesAutoresizingMaskIntoConstraints = false
-        guide.text = "Center your open palm in the frame"
+        guide.text = NSLocalizedString("camera.guide", comment: "")
         guide.textColor = .white
         guide.font = .systemFont(ofSize: 16, weight: .medium)
         guide.textAlignment = .center

@@ -1,0 +1,56 @@
+/* Tabs */
+"nav.read"    = "占卜";
+"nav.match"   = "配对";
+"nav.history" = "历史";
+
+/* Screens */
+"nav.reading" = "您的手相解读";
+"nav.match.result" = "配对结果";
+
+/* Scopes */
+"scope.today"   = "今日运势";
+"scope.month"   = "本月运势";
+"scope.year"    = "今年运势";
+"scope.longterm"= "长远运势";
+
+/* Match types */
+"match.romantic" = "男女配对";
+"match.friend" = "朋友配对";
+
+/* Home screen */
+"app.tagline"  = "探索您手掌中隐藏的秘密";
+"app.subtitle" = "实时拍照或上传手掌照片，选择您想了解的时间范围。";
+"reading.scope.label" = "解读范围";
+
+/* Buttons */
+"button.camera"  = "使用相机拍照";
+"button.photo"   = "从相册选取照片";
+"button.analyze" = "解读我的手相";
+"button.save"    = "保存解读";
+"button.saved"   = "已保存 ✓";
+
+/* Result */
+"section.advice" = "建议";
+
+/* Match */
+"match.title" = "结合手相与生辰信息，进行配对分析";
+"match.type" = "配对类型";
+"match.person1" = "甲方";
+"match.person2" = "乙方";
+"match.birth.person1" = "甲方出生日期与时辰";
+"match.birth.person2" = "乙方出生日期与时辰";
+"match.capture.person1" = "拍摄甲方手掌";
+"match.capture.person2" = "拍摄乙方手掌";
+"match.photo.person1" = "上传甲方手掌照片";
+"match.photo.person2" = "上传乙方手掌照片";
+"match.analyze" = "开始配对分析";
+"match.strengths" = "契合优势";
+"match.tensions" = "潜在摩擦";
+"match.advice" = "相处建议";
+
+/* History */
+"history.empty" = "暂无保存的解读记录。";
+
+/* Camera */
+"camera.cancel" = "取消";
+"camera.guide" = "请将手掌放在画面中央";

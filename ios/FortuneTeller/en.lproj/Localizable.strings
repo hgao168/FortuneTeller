@@ -1,0 +1,56 @@
+/* Tabs */
+"nav.read"    = "Read";
+"nav.match"   = "Match";
+"nav.history" = "History";
+
+/* Screens */
+"nav.reading" = "Your Reading";
+"nav.match.result" = "Match Result";
+
+/* Scopes */
+"scope.today"   = "Today";
+"scope.month"   = "This Month";
+"scope.year"    = "This Year";
+"scope.longterm"= "Long Term";
+
+/* Match types */
+"match.romantic" = "Romantic Match";
+"match.friend" = "Friend Match";
+
+/* Home screen */
+"app.tagline"  = "Discover what your palm reveals";
+"app.subtitle" = "Live capture or upload a photo. Choose the time horizon for your reading.";
+"reading.scope.label" = "Reading Scope";
+
+/* Buttons */
+"button.camera"  = "Use Live Camera";
+"button.photo"   = "Upload Palm Photo";
+"button.analyze" = "Read My Palm";
+"button.save"    = "Save Reading";
+"button.saved"   = "Saved ✓";
+
+/* Result */
+"section.advice" = "Advice";
+
+/* Match */
+"match.title" = "Compare two palms for compatibility";
+"match.type" = "Match Type";
+"match.person1" = "Person A";
+"match.person2" = "Person B";
+"match.birth.person1" = "Person A Birth Date & Time";
+"match.birth.person2" = "Person B Birth Date & Time";
+"match.capture.person1" = "Capture Person A";
+"match.capture.person2" = "Capture Person B";
+"match.photo.person1" = "Upload Person A Photo";
+"match.photo.person2" = "Upload Person B Photo";
+"match.analyze" = "Analyze Compatibility";
+"match.strengths" = "Strengths";
+"match.tensions" = "Potential Tensions";
+"match.advice" = "How to Improve";
+
+/* History */
+"history.empty" = "No saved readings yet.";
+
+/* Camera */
+"camera.cancel" = "Cancel";
+"camera.guide" = "Center your open palm in the frame";
