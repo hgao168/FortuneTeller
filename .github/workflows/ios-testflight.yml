@@ -88,7 +88,7 @@ jobs:
             <true/>
             <key>provisioningProfiles</key>
             <dict>
-              <key>com.hgao168.fortuneteller888</key>
+                <key>ai.movenova.fortuneteller</key>
               <string>${IOS_APP_STORE_PROFILE_NAME}</string>
             </dict>
           </dict>

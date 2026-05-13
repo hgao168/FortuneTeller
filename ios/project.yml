@@ -1,6 +1,6 @@
 name: FortuneTeller
 options:
-  bundleIdPrefix: com.hgao168.fortuneteller888
+  bundleIdPrefix: ai.movenova.fortuneteller
   deploymentTarget:
     iOS: "16.0"
   developmentLanguage: en
@@ -29,7 +29,7 @@ targets:
         NSPhotoLibraryUsageDescription: "FortuneTeller uses your photos so you can upload a palm picture."
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.hgao168.fortuneteller888
+        PRODUCT_BUNDLE_IDENTIFIER: ai.movenova.fortuneteller
         TARGETED_DEVICE_FAMILY: "1,2"
         CODE_SIGN_STYLE: Automatic
       configs:
@@ -46,5 +46,5 @@ targets:
       - target: FortuneTeller
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.hgao168.fortuneteller888.tests
+        PRODUCT_BUNDLE_IDENTIFIER: ai.movenova.fortuneteller.tests
         GENERATE_INFOPLIST_FILE: YES
