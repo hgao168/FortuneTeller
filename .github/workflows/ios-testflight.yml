@@ -1,90 +1,139 @@
-name: iOS TestFlight
+name: iOS Production → TestFlight (Manual)
 
 on:
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
-  build-and-upload:
-    runs-on: macos-14
+  build:
+    name: Build & Export Production iOS IPA
+    runs-on: macos-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout main branch
         uses: actions/checkout@v4
-
-      - name: Select Xcode
-        uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: "15.4"
+          ref: main
 
       - name: Install XcodeGen
         run: brew install xcodegen
 
+      - name: Select latest Xcode version
+        run: |
+          echo "Available Xcode installations:"
+          ls /Applications/ | grep -i xcode || true
+          LATEST=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
+          echo "Selecting: $LATEST"
+          sudo xcode-select -s "$LATEST/Contents/Developer"
+          xcodebuild -version
+
+      - name: Create temporary keychain
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+
+      - name: Import distribution certificate
+        run: |
+          CERTIFICATE_PATH=$RUNNER_TEMP/distribution.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          echo "${{ secrets.ios_distribution_p12_base64 }}" | base64 --decode > "$CERTIFICATE_PATH"
+          security import "$CERTIFICATE_PATH" \
+            -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" \
+            -A -t cert -f pkcs12 \
+            -k "$KEYCHAIN_PATH"
+          security set-key-partition-list \
+            -S apple-tool:,apple:,codesign: \
+            -s -k "${{ secrets.KEYCHAIN_PASSWORD }}" \
+            "$KEYCHAIN_PATH"
+
+      - name: Install provisioning profile
+        run: |
+          PP_PATH=$RUNNER_TEMP/profile.mobileprovision
+          echo "${{ secrets.IOS_PROVISION_PROFILE }}" | base64 --decode > "$PP_PATH"
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          PROFILE_UUID=$(security cms -D -i "$PP_PATH" | python3 -c "import plistlib, sys; pl = plistlib.loads(sys.stdin.buffer.read()); print(pl['UUID'])")
+          cp "$PP_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/"$PROFILE_UUID".mobileprovision
+          echo "PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
+          echo "Installed provisioning profile UUID: $PROFILE_UUID"
+
       - name: Generate Xcode project
+        run: xcodegen generate --spec ios/project.yml
+
+      - name: Archive app (Release configuration → production backend)
         run: |
-          cd ios
-          xcodegen generate --spec project.yml
-
-      - name: Import signing certificate
-        uses: apple-actions/import-codesign-certs@v3
-        with:
-          p12-file-base64: ${{ secrets.ios_distribution_p12_base64 }}
-          p12-password: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
-
-      - name: Download App Store provisioning profile
-        uses: apple-actions/download-provisioning-profiles@v4
-        with:
-          bundle-id: ai.movenova.fortuneteller
-          profile-type: IOS_APP_STORE
-          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
-          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
-          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
-
-      - name: Archive app
-        run: |
-          cd ios
-          xcodebuild \
-            -project FortuneTeller.xcodeproj \
+          xcodebuild archive \
+            -project ios/FortuneTeller.xcodeproj \
             -scheme FortuneTeller \
             -configuration Release \
-            -archivePath build/FortuneTeller.xcarchive \
+            -archivePath "$RUNNER_TEMP/FortuneTeller.xcarchive" \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }} \
             CODE_SIGN_IDENTITY="Apple Distribution" \
-            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}" \
-            CODE_SIGN_STYLE=Automatic \
-            -allowProvisioningUpdates \
-            archive
+            PROVISIONING_PROFILE_SPECIFIER="FortuneTeller-Prod" \
+            BACKEND_BASE_URL="https://fortuneteller-production-f93e.up.railway.app" \
+            CURRENT_PROJECT_VERSION="1"
 
       - name: Export IPA
         run: |
-          set -euo pipefail
-          cd ios
-          cat > ExportOptions.plist <<EOF
+          cat > "$RUNNER_TEMP/exportOptions.plist" <<PLIST
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>app-store</string>
-            <key>signingStyle</key>
-            <string>automatic</string>
+            <string>app-store-connect</string>
             <key>teamID</key>
             <string>${{ secrets.APPLE_TEAM_ID }}</string>
-            <key>uploadBitcode</key>
-            <false/>
             <key>uploadSymbols</key>
             <true/>
+            <key>compileBitcode</key>
+            <false/>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>ai.movenova.fortuneteller</key>
+              <string>FortuneTeller-Prod</string>
+            </dict>
           </dict>
           </plist>
-          EOF
-          xcodebuild \
-            -exportArchive \
-            -archivePath build/FortuneTeller.xcarchive \
-            -exportOptionsPlist ExportOptions.plist \
-            -exportPath build/export
+          PLIST
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/FortuneTeller.xcarchive" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -exportOptionsPlist "$RUNNER_TEMP/exportOptions.plist"
+          IPA_PATH=$(find "$RUNNER_TEMP/export" -name "*.ipa" | head -1)
+          echo "IPA_PATH=$IPA_PATH" >> "$GITHUB_ENV"
+          echo "Exported IPA: $IPA_PATH"
 
-      - name: Upload IPA to TestFlight
-        uses: apple-actions/upload-testflight-build@v4
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
         with:
-          app-path: ios/build/export/FortuneTeller.ipa
-          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
-          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
-          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+          name: FortuneTeller-ipa
+          path: ${{ runner.temp }}/export/*.ipa
+          retention-days: 30
+
+      - name: Upload to TestFlight
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys/
+          echo "${{ secrets.APP_STORE_CONNECT_API_KEY }}" | base64 --decode \
+            > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8
+          xcrun altool --upload-app \
+            --type ios \
+            --file "$IPA_PATH" \
+            --apiKey "${{ secrets.APP_STORE_CONNECT_KEY_ID }}" \
+            --apiIssuer "${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}" \
+            --verbose
+          rm -f ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8
+
+      - name: Clean up keychain and provisioning profile
+        if: always()
+        run: |
+          security delete-keychain "$RUNNER_TEMP/app-signing.keychain-db" || true
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/"$PROFILE_UUID".mobileprovision || true
