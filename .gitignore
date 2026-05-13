@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.env.*
+
+# macOS / Xcode
+.DS_Store
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+build/
+*.xcuserstate
+
+# Logs
+*.log

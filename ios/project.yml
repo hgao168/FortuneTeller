@@ -1,0 +1,34 @@
+name: FortuneTeller
+options:
+  bundleIdPrefix: com.example.fortuneteller
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    DEVELOPMENT_TEAM: ""
+    INFOPLIST_KEY_NSCameraUsageDescription: "FortuneTeller uses the camera to read your palm."
+    INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "FortuneTeller uses your photos so you can upload a palm picture."
+targets:
+  FortuneTeller:
+    type: application
+    platform: iOS
+    sources:
+      - FortuneTeller
+    info:
+      path: FortuneTeller/Info.plist
+      properties:
+        UILaunchScreen:
+          UIColorName: ""
+        BACKEND_BASE_URL: "http://localhost:8000"
+        NSCameraUsageDescription: "FortuneTeller uses the camera to read your palm."
+        NSPhotoLibraryUsageDescription: "FortuneTeller uses your photos so you can upload a palm picture."
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.fortuneteller
+        TARGETED_DEVICE_FAMILY: "1,2"
+      configs:
+        Debug:
+          BACKEND_BASE_URL: "http://localhost:8000"
+        Release:
+          BACKEND_BASE_URL: "https://YOUR-PROD-API.example.com"
