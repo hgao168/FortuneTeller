@@ -1,6 +1,6 @@
 name: FortuneTeller
 options:
-  bundleIdPrefix: com.example.fortuneteller
+  bundleIdPrefix: com.hgao168.fortuneteller888
   deploymentTarget:
     iOS: "16.0"
   developmentLanguage: en
@@ -9,6 +9,8 @@ settings:
   base:
     SWIFT_VERSION: "5.9"
     DEVELOPMENT_TEAM: ""
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
     INFOPLIST_KEY_NSCameraUsageDescription: "FortuneTeller uses the camera to read your palm."
     INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "FortuneTeller uses your photos so you can upload a palm picture."
 targets:
@@ -27,8 +29,9 @@ targets:
         NSPhotoLibraryUsageDescription: "FortuneTeller uses your photos so you can upload a palm picture."
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.fortuneteller
+        PRODUCT_BUNDLE_IDENTIFIER: com.hgao168.fortuneteller888
         TARGETED_DEVICE_FAMILY: "1,2"
+        CODE_SIGN_STYLE: Automatic
       configs:
         Debug:
           BACKEND_BASE_URL: "http://localhost:8000"
@@ -43,5 +46,5 @@ targets:
       - target: FortuneTeller
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.fortuneteller.tests
+        PRODUCT_BUNDLE_IDENTIFIER: com.hgao168.fortuneteller888.tests
         GENERATE_INFOPLIST_FILE: YES
