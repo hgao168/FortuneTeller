@@ -27,29 +27,17 @@ jobs:
       - name: Import signing certificate
         uses: apple-actions/import-codesign-certs@v3
         with:
-          p12-file-base64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
-          p12-password: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
-
-      - name: Decode App Store Connect key
-        id: asc-key
-        env:
-          APP_STORE_CONNECT_PRIVATE_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY_BASE64 }}
-        run: |
-          set -euo pipefail
-          {
-            echo 'private_key<<EOF'
-            echo "$APP_STORE_CONNECT_PRIVATE_KEY_BASE64" | base64 --decode
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
+          p12-file-base64: ${{ secrets.APPSTORE_CERTIFICATES_FILE_BASE64 }}
+          p12-password: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
 
       - name: Download App Store provisioning profile
         uses: apple-actions/download-provisioning-profiles@v4
         with:
           bundle-id: ai.movenova.fortuneteller
           profile-type: IOS_APP_STORE
-          issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          api-private-key: ${{ steps.asc-key.outputs.private_key }}
+          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
 
       - name: Archive app
         run: |
@@ -97,6 +85,6 @@ jobs:
         uses: apple-actions/upload-testflight-build@v4
         with:
           app-path: ios/build/export/FortuneTeller.ipa
-          issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          api-private-key: ${{ steps.asc-key.outputs.private_key }}
+          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
