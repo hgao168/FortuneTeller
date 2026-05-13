@@ -19,10 +19,16 @@ final class APIClient {
     static let shared = APIClient()
 
     private let baseURL: URL = {
-        if let urlString = Bundle.main.object(forInfoDictionaryKey: "BACKEND_BASE_URL") as? String,
-           !urlString.isEmpty,
-           let url = URL(string: urlString) {
-            return url
+        if let raw = Bundle.main.object(forInfoDictionaryKey: "BACKEND_BASE_URL") as? String {
+            let urlString = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !urlString.isEmpty {
+                if let url = URL(string: urlString), url.scheme != nil {
+                    return url
+                }
+                if let url = URL(string: "https://\(urlString)") {
+                    return url
+                }
+            }
         }
         // Local default for first-run developer ergonomics.
         return URL(string: "http://localhost:8000")!
