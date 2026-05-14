@@ -26,107 +26,122 @@ struct MatchView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 18) {
-                    Text("match.title")
-                        .font(.title2.weight(.semibold))
-                        .multilineTextAlignment(.center)
+            ZStack {
+                FutureBackground()
 
-                    matchTypeSelector
-
-                    VStack(spacing: 10) {
-                        DatePicker(
-                            "match.birth.person1",
-                            selection: $personABirth,
-                            displayedComponents: [.date, .hourAndMinute]
-                        )
-                        DatePicker(
-                            "match.birth.person2",
-                            selection: $personBBirth,
-                            displayedComponents: [.date, .hourAndMinute]
-                        )
-                    }
-
-                    HStack(spacing: 12) {
-                        imageCard(image: firstImage, title: "match.person1", accent: .blue)
-                        imageCard(image: secondImage, title: "match.person2", accent: .pink)
-                    }
-
-                    VStack(spacing: 10) {
-                        Button {
-                            selectingSlot = .first
-                            showCamera = true
-                        } label: {
-                            Label("match.capture.person1", systemImage: "camera.fill")
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                        }
-                        .background(Color.purple.opacity(0.12))
-                        .foregroundColor(.purple)
-                        .cornerRadius(12)
-
-                        Button {
-                            selectingSlot = .second
-                            showCamera = true
-                        } label: {
-                            Label("match.capture.person2", systemImage: "camera.fill")
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                        }
-                        .background(Color.purple.opacity(0.12))
-                        .foregroundColor(.purple)
-                        .cornerRadius(12)
-
-                        Button {
-                            selectingSlot = .first
-                            showPicker = true
-                        } label: {
-                            Label("match.photo.person1", systemImage: "photo.on.rectangle")
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                        }
-                        .background(Color(.secondarySystemBackground))
-                        .foregroundStyle(.primary)
-                        .cornerRadius(12)
-
-                        Button {
-                            selectingSlot = .second
-                            showPicker = true
-                        } label: {
-                            Label("match.photo.person2", systemImage: "photo.on.rectangle")
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                        }
-                        .background(Color(.secondarySystemBackground))
-                        .foregroundStyle(.primary)
-                        .cornerRadius(12)
-                    }
-
-                    Button {
-                        Task { await match() }
-                    } label: {
-                        if isLoading {
-                            ProgressView().tint(.white)
-                        } else {
-                            Text("match.analyze")
-                                .font(.headline)
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.purple)
-                    .foregroundColor(.white)
-                    .cornerRadius(14)
-                    .disabled(isLoading || firstImage == nil || secondImage == nil)
-
-                    if let errorMessage {
-                        Text(errorMessage)
-                            .font(.callout)
-                            .foregroundColor(.red)
+                ScrollView {
+                    VStack(spacing: 18) {
+                        Text("match.title")
+                            .font(.title2.weight(.semibold))
                             .multilineTextAlignment(.center)
+                            .foregroundStyle(Color(red: 0.29, green: 0.21, blue: 0.36))
+
+                        matchTypeSelector
+
+                        GlassCard {
+                            VStack(spacing: 10) {
+                                DatePicker(
+                                    "match.birth.person1",
+                                    selection: $personABirth,
+                                    displayedComponents: [.date, .hourAndMinute]
+                                )
+                                DatePicker(
+                                    "match.birth.person2",
+                                    selection: $personBBirth,
+                                    displayedComponents: [.date, .hourAndMinute]
+                                )
+                            }
+                        }
+
+                        HStack(spacing: 12) {
+                            imageCard(image: firstImage, title: "match.person1", accent: .blue)
+                            imageCard(image: secondImage, title: "match.person2", accent: .pink)
+                        }
+
+                        GlassCard {
+                            VStack(spacing: 10) {
+                                Button {
+                                    selectingSlot = .first
+                                    showCamera = true
+                                } label: {
+                                    Label("match.capture.person1", systemImage: "camera.fill")
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                }
+                                .background(Color.orange.opacity(0.16))
+                                .foregroundColor(Color(red: 0.88, green: 0.45, blue: 0.23))
+                                .cornerRadius(12)
+
+                                Button {
+                                    selectingSlot = .second
+                                    showCamera = true
+                                } label: {
+                                    Label("match.capture.person2", systemImage: "camera.fill")
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                }
+                                .background(Color.pink.opacity(0.16))
+                                .foregroundColor(Color(red: 0.78, green: 0.30, blue: 0.44))
+                                .cornerRadius(12)
+
+                                Button {
+                                    selectingSlot = .first
+                                    showPicker = true
+                                } label: {
+                                    Label("match.photo.person1", systemImage: "photo.on.rectangle")
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                }
+                                .background(.white.opacity(0.65))
+                                .foregroundStyle(.primary)
+                                .cornerRadius(12)
+
+                                Button {
+                                    selectingSlot = .second
+                                    showPicker = true
+                                } label: {
+                                    Label("match.photo.person2", systemImage: "photo.on.rectangle")
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                }
+                                .background(.white.opacity(0.65))
+                                .foregroundStyle(.primary)
+                                .cornerRadius(12)
+                            }
+                        }
+
+                        Button {
+                            Task { await match() }
+                        } label: {
+                            if isLoading {
+                                ProgressView().tint(.white)
+                            } else {
+                                Text("match.analyze")
+                                    .font(.headline)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(
+                            LinearGradient(
+                                colors: [Color.orange.opacity(0.95), Color.pink.opacity(0.9)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .foregroundColor(.white)
+                        .cornerRadius(14)
+                        .disabled(isLoading || firstImage == nil || secondImage == nil)
+
+                        if let errorMessage {
+                            Text(errorMessage)
+                                .font(.callout)
+                                .foregroundColor(.red)
+                                .multilineTextAlignment(.center)
+                        }
                     }
+                    .padding()
                 }
-                .padding()
             }
             .navigationTitle(Text("nav.match"))
             .fullScreenCover(isPresented: $showCamera) {

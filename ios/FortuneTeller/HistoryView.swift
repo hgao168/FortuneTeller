@@ -6,22 +6,37 @@ struct HistoryView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
-                if store.readings.isEmpty {
-                    emptyState
-                } else {
-                    List {
-                        ForEach(store.readings) { reading in
-                            Button {
-                                selected = reading
-                            } label: {
-                                HistoryRowView(reading: reading)
+            ZStack {
+                FutureBackground()
+
+                Group {
+                    if store.readings.isEmpty {
+                        emptyState
+                    } else {
+                        List {
+                            ForEach(store.readings) { reading in
+                                Button {
+                                    selected = reading
+                                } label: {
+                                    HistoryRowView(reading: reading)
+                                }
+                                .foregroundStyle(.primary)
+                                .listRowInsets(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
+                                .listRowBackground(
+                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                        .fill(Color.white.opacity(0.72))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                                .stroke(Color.orange.opacity(0.25), lineWidth: 1)
+                                        )
+                                )
                             }
-                            .foregroundStyle(.primary)
+                            .onDelete { offsets in
+                                store.delete(at: offsets)
+                            }
                         }
-                        .onDelete { offsets in
-                            store.delete(at: offsets)
-                        }
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
                     }
                 }
             }
@@ -63,12 +78,11 @@ struct HistoryView: View {
 
     private var emptyState: some View {
         VStack(spacing: 16) {
-            Image(systemName: "hand.raised.slash")
+            Text("🫳")
                 .font(.system(size: 52))
-                .foregroundStyle(.secondary)
             Text("history.empty")
                 .font(.body)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color(red: 0.28, green: 0.20, blue: 0.36))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -87,16 +101,16 @@ struct HistoryRowView: View {
                     if case .match(let r) = reading.content {
                         Text("\(r.score)%")
                             .font(.caption.weight(.semibold))
-                            .foregroundColor(.purple)
+                            .foregroundColor(Color(red: 0.94, green: 0.44, blue: 0.34))
                     }
                 }
                 Text(reading.summary)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color(red: 0.33, green: 0.28, blue: 0.40))
                     .lineLimit(2)
                 Text(reading.date.formatted(date: .abbreviated, time: .shortened))
                     .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(Color(red: 0.44, green: 0.36, blue: 0.52))
             }
         }
         .padding(.vertical, 4)
@@ -131,7 +145,7 @@ struct HistoryRowView: View {
                     .resizable()
                     .scaledToFill()
             } else {
-                Color.purple.opacity(0.15)
+                Color.pink.opacity(0.22)
             }
         }
         .frame(width: 36, height: 36)
@@ -143,8 +157,8 @@ struct HistoryRowView: View {
         Image(systemName: systemName)
             .font(.title2)
             .frame(width: 56, height: 56)
-            .background(Color.purple.opacity(0.12))
+            .background(Color.orange.opacity(0.18))
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            .foregroundColor(.purple)
+            .foregroundColor(Color(red: 0.94, green: 0.44, blue: 0.34))
     }
 }

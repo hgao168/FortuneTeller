@@ -1,7 +1,7 @@
 import SwiftUI
 import ObjectiveC.runtime
 
-// MARK: - Pro Future Design System
+// MARK: - Pro Fun Design System
 
 enum AppLanguage: String, CaseIterable, Identifiable {
     case system
@@ -118,9 +118,9 @@ struct FutureBackground: View {
         ZStack {
             LinearGradient(
                 colors: [
-                    Color(red: 0.03, green: 0.02, blue: 0.09),
-                    Color(red: 0.08, green: 0.03, blue: 0.18),
-                    Color(red: 0.02, green: 0.08, blue: 0.16)
+                    Color(red: 1.00, green: 0.95, blue: 0.86),
+                    Color(red: 0.86, green: 0.98, blue: 0.95),
+                    Color(red: 0.92, green: 0.90, blue: 1.00)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -128,22 +128,29 @@ struct FutureBackground: View {
             .ignoresSafeArea()
 
             Circle()
-                .fill(.purple.opacity(0.32))
+                .fill(Color(red: 1.00, green: 0.74, blue: 0.56).opacity(0.45))
                 .frame(width: 280, height: 280)
-                .blur(radius: 80)
-                .offset(x: -120, y: -240)
+                .blur(radius: 58)
+                .offset(x: -150, y: -280)
 
             Circle()
-                .fill(.cyan.opacity(0.24))
+                .fill(Color(red: 0.39, green: 0.87, blue: 0.80).opacity(0.38))
                 .frame(width: 260, height: 260)
-                .blur(radius: 85)
-                .offset(x: 150, y: 160)
+                .blur(radius: 64)
+                .offset(x: 170, y: 170)
 
             Circle()
-                .fill(.pink.opacity(0.18))
+                .fill(Color(red: 1.00, green: 0.57, blue: 0.72).opacity(0.34))
                 .frame(width: 220, height: 220)
-                .blur(radius: 75)
+                .blur(radius: 56)
                 .offset(x: -120, y: 320)
+
+            RoundedRectangle(cornerRadius: 52, style: .continuous)
+                .fill(Color(red: 0.57, green: 0.66, blue: 1.00).opacity(0.26))
+                .frame(width: 210, height: 90)
+                .rotationEffect(.degrees(24))
+                .blur(radius: 26)
+                .offset(x: 130, y: -210)
         }
     }
 }
@@ -158,19 +165,19 @@ struct GlassCard<Content: View>: View {
     var body: some View {
         content
             .padding(18)
-            .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+            .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 28, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 28, style: .continuous)
                     .stroke(
                         LinearGradient(
-                            colors: [.white.opacity(0.35), .white.opacity(0.06)],
+                            colors: [Color.orange.opacity(0.45), Color.pink.opacity(0.28), Color.cyan.opacity(0.35)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ),
                         lineWidth: 1
                     )
             )
-            .shadow(color: .black.opacity(0.24), radius: 24, x: 0, y: 14)
+            .shadow(color: Color(red: 0.91, green: 0.48, blue: 0.58).opacity(0.22), radius: 20, x: 0, y: 12)
     }
 }
 
@@ -209,12 +216,12 @@ struct ProPrimaryButton: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .foregroundStyle(.white)
+            .foregroundStyle(Color(red: 0.23, green: 0.16, blue: 0.23))
             .background(
                 LinearGradient(
                     colors: isDisabled
                         ? [.gray.opacity(0.45), .gray.opacity(0.25)]
-                        : [.purple, .pink, .cyan.opacity(0.85)],
+                        : [Color(red: 1.00, green: 0.78, blue: 0.44), Color(red: 1.00, green: 0.57, blue: 0.72), Color(red: 0.54, green: 0.86, blue: 0.95)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 ),
@@ -222,7 +229,7 @@ struct ProPrimaryButton: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(.white.opacity(0.25), lineWidth: 1)
+                    .stroke(.white.opacity(0.72), lineWidth: 1)
             )
         }
         .disabled(isDisabled || isLoading)
@@ -240,11 +247,11 @@ struct ProSecondaryButton: View {
                 .font(.headline)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 15)
-                .foregroundStyle(.white)
-                .background(.white.opacity(0.09), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .foregroundStyle(Color(red: 0.21, green: 0.18, blue: 0.28))
+                .background(.white.opacity(0.62), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .overlay(
                     RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .stroke(.white.opacity(0.16), lineWidth: 1)
+                        .stroke(Color.pink.opacity(0.22), lineWidth: 1)
                 )
         }
     }
@@ -261,11 +268,12 @@ struct LanguageMenu: View {
                 }
             }
         } label: {
-            Image(systemName: "globe.asia.australia.fill")
+            Image(systemName: "sparkles")
                 .font(.headline)
-                .foregroundStyle(.white)
+                .foregroundStyle(Color(red: 0.28, green: 0.20, blue: 0.39))
                 .padding(10)
-                .background(.white.opacity(0.10), in: Circle())
+                .background(.white.opacity(0.74), in: Circle())
+                .overlay(Circle().stroke(Color.orange.opacity(0.45), lineWidth: 1))
         }
     }
 }

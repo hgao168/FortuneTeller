@@ -14,7 +14,9 @@ struct ContentView: View {
             HistoryView()
                 .tabItem { Label("nav.history", systemImage: "clock.arrow.circlepath") }
         }
-        .tint(.pink)
+        .tint(Color(red: 0.95, green: 0.46, blue: 0.33))
+        .toolbarBackground(.visible, for: .tabBar)
+        .toolbarBackground(Color.white.opacity(0.92), for: .tabBar)
         .environmentObject(store)
     }
 }
@@ -60,7 +62,7 @@ struct ReadTabView: View {
                 ToolbarItem(placement: .topBarLeading) {
                     Text("app.name")
                         .font(.headline.weight(.bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color(red: 0.27, green: 0.18, blue: 0.39))
                         .lineLimit(1)
                         .minimumScaleFactor(0.72)
                 }
@@ -100,29 +102,29 @@ struct ReadTabView: View {
         VStack(spacing: 16) {
             ZStack {
                 Circle()
-                    .fill(.white.opacity(0.10))
+                    .fill(.white.opacity(0.62))
                     .frame(width: 118, height: 118)
-                    .overlay(Circle().stroke(.white.opacity(0.18), lineWidth: 1))
+                    .overlay(Circle().stroke(Color.orange.opacity(0.32), lineWidth: 1))
 
-                Image(systemName: "hand.raised.fill")
+                Image(systemName: "hand.wave.fill")
                     .font(.system(size: 54, weight: .semibold))
                     .foregroundStyle(
-                        LinearGradient(colors: [.white, .pink.opacity(0.9), .cyan.opacity(0.9)],
+                        LinearGradient(colors: [Color.orange, Color.pink.opacity(0.9), Color.mint.opacity(0.9)],
                                        startPoint: .topLeading,
                                        endPoint: .bottomTrailing)
                     )
-                    .shadow(color: .pink.opacity(0.6), radius: 22)
+                    .shadow(color: Color.orange.opacity(0.4), radius: 18)
             }
 
             VStack(spacing: 8) {
                 Text("app.hero.title")
                     .font(.system(size: 34, weight: .heavy, design: .rounded))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color(red: 0.28, green: 0.19, blue: 0.36))
                     .multilineTextAlignment(.center)
 
                 Text("app.subtitle")
                     .font(.callout)
-                    .foregroundStyle(.white.opacity(0.72))
+                    .foregroundStyle(Color(red: 0.33, green: 0.28, blue: 0.40).opacity(0.88))
                     .multilineTextAlignment(.center)
                     .lineSpacing(3)
             }
@@ -135,7 +137,7 @@ struct ReadTabView: View {
             VStack(alignment: .leading, spacing: 14) {
                 Label("reading.scope.label", systemImage: "wand.and.stars")
                     .font(.headline)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color(red: 0.26, green: 0.21, blue: 0.34))
 
                 Picker("reading.scope.label", selection: $scope) {
                     ForEach(ReadingScope.allCases) { value in
@@ -197,13 +199,13 @@ struct ReadTabView: View {
                 VStack(spacing: 10) {
                     Image(systemName: "viewfinder.circle.fill")
                         .font(.system(size: 44))
-                        .foregroundStyle(.white.opacity(0.80))
+                        .foregroundStyle(Color(red: 0.92, green: 0.58, blue: 0.33))
                     Text("app.empty.preview.title")
                         .font(.headline)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color(red: 0.29, green: 0.21, blue: 0.35))
                     Text("app.empty.preview.subtitle")
                         .font(.footnote)
-                        .foregroundStyle(.white.opacity(0.65))
+                        .foregroundStyle(Color(red: 0.33, green: 0.28, blue: 0.40).opacity(0.88))
                         .multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity)
