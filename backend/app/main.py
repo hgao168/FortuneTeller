@@ -1,7 +1,7 @@
 import os
 from typing import Optional
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from .analyzer import analyze_palm_image, analyze_palm_match
@@ -23,6 +23,22 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/")
+async def root() -> dict:
+    return {
+        "service": "FortuneTeller API",
+        "status": "ok",
+        "docs": "/docs",
+        "health": "/health",
+    }
+
+
+@app.get("/apple-touch-icon.png")
+async def apple_touch_icon() -> Response:
+    # Browsers may request this automatically; return 204 to reduce noisy 404 logs.
+    return Response(status_code=204)
 
 
 @app.get("/health")
