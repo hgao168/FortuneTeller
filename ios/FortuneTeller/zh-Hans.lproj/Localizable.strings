@@ -1,36 +1,44 @@
 /* Tabs */
-"nav.read"    = "占卜";
-"nav.match"   = "配对";
+"nav.read" = "解读";
+"nav.match" = "配对";
 "nav.history" = "历史";
 
 /* Screens */
 "nav.reading" = "您的手相解读";
 "nav.match.result" = "配对结果";
 
+/* App */
+"app.name" = "FortuneTeller";
+"app.nav.subtitle" = "AI 手相洞察";
+"app.hero.title" = "解锁你的下一段能量信号";
+"app.tagline" = "探索您手掌中隐藏的秘密";
+"app.subtitle" = "拍摄或上传手掌照片，获取覆盖事业、感情、健康与财富的 AI 解读。";
+"app.empty.preview.title" = "手掌扫描将在这里显示";
+"app.empty.preview.subtitle" = "建议使用光线清晰、手掌完全展开的照片，以获得更好的结果。";
+
+/* Language */
+"language.title" = "语言";
+"language.system" = "跟随系统";
+"language.english" = "English";
+"language.chinese" = "中文";
+
 /* Scopes */
-"scope.today"   = "今日运势";
-"scope.month"   = "本月运势";
-"scope.year"    = "今年运势";
-"scope.longterm"= "长远运势";
-
-/* Match types */
-"match.romantic" = "男女配对";
-"match.friend" = "朋友配对";
-
-/* Home screen */
-"app.tagline"  = "探索您手掌中隐藏的秘密";
-"app.subtitle" = "实时拍照或上传手掌照片，选择您想了解的时间范围。";
+"scope.today" = "今日运势";
+"scope.month" = "本月运势";
+"scope.year" = "今年运势";
+"scope.longterm" = "长远运势";
 "reading.scope.label" = "解读范围";
 
 /* Buttons */
-"button.camera"  = "使用相机拍照";
-"button.photo"   = "从相册选取照片";
+"button.camera" = "使用相机拍照";
+"button.photo" = "从相册选取照片";
 "button.analyze" = "解读我的手相";
-"button.save"    = "保存解读";
-"button.saved"   = "已保存 ✓";
+"button.save" = "保存解读";
+"button.saved" = "已保存 ✓";
 
 /* Result */
 "section.advice" = "建议";
+"result.cosmic.signal" = "个人 AI 信号";
 
 /* Match */
 "match.title" = "结合手相与生辰信息，进行配对分析";

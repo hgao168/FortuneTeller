@@ -1,36 +1,44 @@
 /* Tabs */
-"nav.read"    = "Read";
-"nav.match"   = "Match";
+"nav.read" = "Read";
+"nav.match" = "Match";
 "nav.history" = "History";
 
 /* Screens */
 "nav.reading" = "Your Reading";
 "nav.match.result" = "Match Result";
 
+/* App */
+"app.name" = "FortuneTeller";
+"app.nav.subtitle" = "AI palm insight";
+"app.hero.title" = "Reveal your next signal";
+"app.tagline" = "Discover what your palm reveals";
+"app.subtitle" = "Capture or upload your palm. Get a beautiful AI reading across career, love, health and wealth.";
+"app.empty.preview.title" = "Your palm scan appears here";
+"app.empty.preview.subtitle" = "Use a clear photo with good light and an open palm for the best result.";
+
+/* Language */
+"language.title" = "Language";
+"language.system" = "System";
+"language.english" = "English";
+"language.chinese" = "中文";
+
 /* Scopes */
-"scope.today"   = "Today";
-"scope.month"   = "This Month";
-"scope.year"    = "This Year";
-"scope.longterm"= "Long Term";
-
-/* Match types */
-"match.romantic" = "Romantic Match";
-"match.friend" = "Friend Match";
-
-/* Home screen */
-"app.tagline"  = "Discover what your palm reveals";
-"app.subtitle" = "Live capture or upload a photo. Choose the time horizon for your reading.";
+"scope.today" = "Today";
+"scope.month" = "This Month";
+"scope.year" = "This Year";
+"scope.longterm" = "Long Term";
 "reading.scope.label" = "Reading Scope";
 
 /* Buttons */
-"button.camera"  = "Use Live Camera";
-"button.photo"   = "Upload Palm Photo";
+"button.camera" = "Use Live Camera";
+"button.photo" = "Upload Palm Photo";
 "button.analyze" = "Read My Palm";
-"button.save"    = "Save Reading";
-"button.saved"   = "Saved ✓";
+"button.save" = "Save Reading";
+"button.saved" = "Saved ✓";
 
 /* Result */
 "section.advice" = "Advice";
+"result.cosmic.signal" = "Personal AI signal";
 
 /* Match */
 "match.title" = "Compare two palms for compatibility";
