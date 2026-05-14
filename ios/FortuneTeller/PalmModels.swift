@@ -25,7 +25,7 @@ struct PalmReadingSection: Codable, Identifiable, Hashable {
     let text: String
 }
 
-struct PalmReadingResponse: Codable {
+struct PalmReadingResponse: Codable, Hashable {
     let scope: ReadingScope
     let summary: String
     let sections: [PalmReadingSection]
@@ -47,7 +47,7 @@ enum MatchType: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-struct PalmMatchResponse: Codable {
+struct PalmMatchResponse: Codable, Hashable {
     let matchType: MatchType
     let score: Int
     let summary: String
@@ -67,12 +67,12 @@ struct PalmMatchResponse: Codable {
     }
 }
 
-enum SavedReadingContent: Codable {
+enum SavedReadingContent: Codable, Hashable {
     case palm(PalmReadingResponse)
     case match(PalmMatchResponse)
 }
 
-struct SavedReading: Codable, Identifiable {
+struct SavedReading: Codable, Identifiable, Hashable {
     var id: UUID
     var date: Date
     var content: SavedReadingContent
