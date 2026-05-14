@@ -118,9 +118,9 @@ struct FutureBackground: View {
         ZStack {
             LinearGradient(
                 colors: [
-                    Color(red: 1.00, green: 0.95, blue: 0.86),
-                    Color(red: 0.86, green: 0.98, blue: 0.95),
-                    Color(red: 0.92, green: 0.90, blue: 1.00)
+                    Color(red: 0.08, green: 0.07, blue: 0.16),
+                    Color(red: 0.11, green: 0.08, blue: 0.24),
+                    Color(red: 0.05, green: 0.13, blue: 0.20)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -128,28 +128,28 @@ struct FutureBackground: View {
             .ignoresSafeArea()
 
             Circle()
-                .fill(Color(red: 1.00, green: 0.74, blue: 0.56).opacity(0.45))
+                .fill(Color(red: 1.00, green: 0.67, blue: 0.38).opacity(0.35))
                 .frame(width: 280, height: 280)
-                .blur(radius: 58)
+                .blur(radius: 72)
                 .offset(x: -150, y: -280)
 
             Circle()
-                .fill(Color(red: 0.39, green: 0.87, blue: 0.80).opacity(0.38))
+                .fill(Color(red: 0.31, green: 0.81, blue: 0.96).opacity(0.30))
                 .frame(width: 260, height: 260)
-                .blur(radius: 64)
+                .blur(radius: 78)
                 .offset(x: 170, y: 170)
 
             Circle()
-                .fill(Color(red: 1.00, green: 0.57, blue: 0.72).opacity(0.34))
+                .fill(Color(red: 0.99, green: 0.52, blue: 0.74).opacity(0.28))
                 .frame(width: 220, height: 220)
-                .blur(radius: 56)
+                .blur(radius: 70)
                 .offset(x: -120, y: 320)
 
             RoundedRectangle(cornerRadius: 52, style: .continuous)
-                .fill(Color(red: 0.57, green: 0.66, blue: 1.00).opacity(0.26))
+                .fill(Color(red: 0.57, green: 0.66, blue: 1.00).opacity(0.20))
                 .frame(width: 210, height: 90)
                 .rotationEffect(.degrees(24))
-                .blur(radius: 26)
+                .blur(radius: 34)
                 .offset(x: 130, y: -210)
         }
     }
@@ -165,19 +165,19 @@ struct GlassCard<Content: View>: View {
     var body: some View {
         content
             .padding(18)
-            .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+            .background(.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 28, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 28, style: .continuous)
                     .stroke(
                         LinearGradient(
-                            colors: [Color.orange.opacity(0.45), Color.pink.opacity(0.28), Color.cyan.opacity(0.35)],
+                            colors: [Color.white.opacity(0.35), Color.pink.opacity(0.28), Color.cyan.opacity(0.35)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ),
                         lineWidth: 1
                     )
             )
-            .shadow(color: Color(red: 0.91, green: 0.48, blue: 0.58).opacity(0.22), radius: 20, x: 0, y: 12)
+            .shadow(color: .black.opacity(0.30), radius: 20, x: 0, y: 12)
     }
 }
 
@@ -216,7 +216,7 @@ struct ProPrimaryButton: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .foregroundStyle(Color(red: 0.23, green: 0.16, blue: 0.23))
+            .foregroundStyle(.white)
             .background(
                 LinearGradient(
                     colors: isDisabled
@@ -229,7 +229,7 @@ struct ProPrimaryButton: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(.white.opacity(0.72), lineWidth: 1)
+                    .stroke(.white.opacity(0.30), lineWidth: 1)
             )
         }
         .disabled(isDisabled || isLoading)
@@ -247,11 +247,11 @@ struct ProSecondaryButton: View {
                 .font(.headline)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 15)
-                .foregroundStyle(Color(red: 0.21, green: 0.18, blue: 0.28))
-                .background(.white.opacity(0.62), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .foregroundStyle(.white)
+                .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .overlay(
                     RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .stroke(Color.pink.opacity(0.22), lineWidth: 1)
+                        .stroke(Color.white.opacity(0.25), lineWidth: 1)
                 )
         }
     }
@@ -270,10 +270,10 @@ struct LanguageMenu: View {
         } label: {
             Image(systemName: "sparkles")
                 .font(.headline)
-                .foregroundStyle(Color(red: 0.28, green: 0.20, blue: 0.39))
+                .foregroundStyle(.white)
                 .padding(10)
-                .background(.white.opacity(0.74), in: Circle())
-                .overlay(Circle().stroke(Color.orange.opacity(0.45), lineWidth: 1))
+                .background(.white.opacity(0.16), in: Circle())
+                .overlay(Circle().stroke(Color.white.opacity(0.25), lineWidth: 1))
         }
     }
 }

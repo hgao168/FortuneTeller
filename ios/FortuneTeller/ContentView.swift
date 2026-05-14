@@ -59,13 +59,6 @@ struct ReadTabView: View {
             }
             .navigationTitle("")
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Text("app.name")
-                        .font(.headline.weight(.bold))
-                        .foregroundStyle(Color(red: 0.27, green: 0.18, blue: 0.39))
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.72)
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     LanguageMenu()
                 }
@@ -119,12 +112,12 @@ struct ReadTabView: View {
             VStack(spacing: 8) {
                 Text("app.hero.title")
                     .font(.system(size: 34, weight: .heavy, design: .rounded))
-                    .foregroundStyle(Color(red: 0.28, green: 0.19, blue: 0.36))
+                    .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
 
                 Text("app.subtitle")
                     .font(.callout)
-                    .foregroundStyle(Color(red: 0.33, green: 0.28, blue: 0.40).opacity(0.88))
+                    .foregroundStyle(.white.opacity(0.80))
                     .multilineTextAlignment(.center)
                     .lineSpacing(3)
             }
@@ -137,7 +130,7 @@ struct ReadTabView: View {
             VStack(alignment: .leading, spacing: 14) {
                 Label("reading.scope.label", systemImage: "wand.and.stars")
                     .font(.headline)
-                    .foregroundStyle(Color(red: 0.26, green: 0.21, blue: 0.34))
+                    .foregroundStyle(.white)
 
                 Picker("reading.scope.label", selection: $scope) {
                     ForEach(ReadingScope.allCases) { value in
@@ -152,17 +145,45 @@ struct ReadTabView: View {
     private var captureCard: some View {
         GlassCard {
             VStack(spacing: 12) {
-                ProSecondaryButton(title: "button.camera", systemImage: "camera.fill") {
+                Button {
                     errorMessage = nil
                     reading = nil
+                    capturedImage = nil
+                    showPicker = false
                     showCamera = true
+                } label: {
+                    Label("button.camera", systemImage: "camera.fill")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 15)
+                        .foregroundStyle(.white)
+                        .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .stroke(.white.opacity(0.25), lineWidth: 1)
+                        )
                 }
+                .buttonStyle(.plain)
 
-                ProSecondaryButton(title: "button.photo", systemImage: "photo.on.rectangle.angled") {
+                Button {
                     errorMessage = nil
                     reading = nil
+                    capturedImage = nil
+                    showCamera = false
                     showPicker = true
+                } label: {
+                    Label("button.photo", systemImage: "photo.on.rectangle.angled")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 15)
+                        .foregroundStyle(.white)
+                        .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .stroke(.white.opacity(0.25), lineWidth: 1)
+                        )
                 }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -202,10 +223,10 @@ struct ReadTabView: View {
                         .foregroundStyle(Color(red: 0.92, green: 0.58, blue: 0.33))
                     Text("app.empty.preview.title")
                         .font(.headline)
-                        .foregroundStyle(Color(red: 0.29, green: 0.21, blue: 0.35))
+                        .foregroundStyle(.white)
                     Text("app.empty.preview.subtitle")
                         .font(.footnote)
-                        .foregroundStyle(Color(red: 0.33, green: 0.28, blue: 0.40).opacity(0.88))
+                        .foregroundStyle(.white.opacity(0.76))
                         .multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity)
