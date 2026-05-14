@@ -1,0 +1,44 @@
+{
+  "pages": [
+    "pages/read/index",
+    "pages/result/index",
+    "pages/match/index",
+    "pages/match-result/index",
+    "pages/history/index"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#1a0f2e",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "掌相奇缘",
+    "backgroundColor": "#1a0f2e",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#9aa0b4",
+    "selectedColor": "#ff8fb1",
+    "backgroundColor": "#15102a",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/read/index",
+        "text": "解读"
+      },
+      {
+        "pagePath": "pages/match/index",
+        "text": "配对"
+      },
+      {
+        "pagePath": "pages/history/index",
+        "text": "历史"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于个性化解读（可选）"
+    }
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

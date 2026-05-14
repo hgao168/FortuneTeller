@@ -1,0 +1,8 @@
+{
+  "description": "Private project configuration. Not committed to AppID-specific data.",
+  "setting": {
+    "compileHotReLoad": true,
+    "urlCheck": false
+  },
+  "projectname": "FortuneTeller"
+}

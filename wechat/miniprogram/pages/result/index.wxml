@@ -1,0 +1,29 @@
+<view class="container" wx:if="{{result}}">
+  <view class="hero">
+    <view class="hero-emoji">🔮</view>
+    <view class="hero-title">{{scopeLabel}}解读</view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">总览</view>
+    <view class="card-text">{{result.summary}}</view>
+  </view>
+
+  <block wx:for="{{result.sections}}" wx:key="title">
+    <view class="card">
+      <view class="card-title">{{item.title}}</view>
+      <view class="card-text">{{item.text}}</view>
+    </view>
+  </block>
+
+  <view class="card" wx:if="{{result.advice && result.advice.length}}">
+    <view class="card-title">💡 建议</view>
+    <view wx:for="{{result.advice}}" wx:for-item="tip" wx:key="*this" class="card-text" style="margin-bottom: 8rpx;">
+      • {{tip}}
+    </view>
+  </view>
+
+  <view class="disclaimer">{{result.disclaimer}}</view>
+
+  <button class="btn-secondary" bindtap="goHome" style="margin-top: 24rpx;">返回</button>
+</view>

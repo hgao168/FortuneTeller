@@ -1,0 +1,69 @@
+<view class="container">
+  <view class="hero">
+    <view class="hero-emoji">💞</view>
+    <view class="hero-title">手相配对</view>
+    <view class="hero-sub">看看你们的缘分指数</view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">配对类型</view>
+    <view class="chip-row">
+      <view class="chip {{matchType === 'romantic' ? 'chip-pink' : ''}}" bindtap="setRomantic">💖 男女配对</view>
+      <view class="chip {{matchType === 'friend' ? 'chip-blue' : ''}}" bindtap="setFriend">🤝 朋友配对</view>
+    </view>
+  </view>
+
+  <!-- 帅哥 -->
+  <view class="card">
+    <view class="card-title">
+      <text class="chip chip-blue" style="margin-right: 12rpx;">{{personA.label}}</text>
+    </view>
+    <view class="preview" bindtap="pickImage" data-who="personA">
+      <image wx:if="{{personA.image}}" src="{{personA.image}}" mode="aspectFill" />
+      <text wx:else class="muted">点击上传手掌照片</text>
+    </view>
+    <view style="margin-top: 18rpx;">
+      <view class="label">出生日期</view>
+      <picker mode="date" value="{{personA.birthDate}}" data-who="personA" bindchange="onDateChange">
+        <view class="chip">{{personA.birthDate || '选择日期'}}</view>
+      </picker>
+    </view>
+    <view style="margin-top: 12rpx;">
+      <view class="label">出生时间</view>
+      <picker mode="time" value="{{personA.birthTime}}" data-who="personA" bindchange="onTimeChange">
+        <view class="chip">{{personA.birthTime}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 美女 -->
+  <view class="card">
+    <view class="card-title">
+      <text class="chip chip-pink" style="margin-right: 12rpx;">{{personB.label}}</text>
+    </view>
+    <view class="preview" bindtap="pickImage" data-who="personB">
+      <image wx:if="{{personB.image}}" src="{{personB.image}}" mode="aspectFill" />
+      <text wx:else class="muted">点击上传手掌照片</text>
+    </view>
+    <view style="margin-top: 18rpx;">
+      <view class="label">出生日期</view>
+      <picker mode="date" value="{{personB.birthDate}}" data-who="personB" bindchange="onDateChange">
+        <view class="chip">{{personB.birthDate || '选择日期'}}</view>
+      </picker>
+    </view>
+    <view style="margin-top: 12rpx;">
+      <view class="label">出生时间</view>
+      <picker mode="time" value="{{personB.birthTime}}" data-who="personB" bindchange="onTimeChange">
+        <view class="chip">{{personB.birthTime}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <button class="btn-primary" bindtap="submit" disabled="{{loading}}">
+    {{loading ? '配对中...' : '开始配对'}}
+  </button>
+
+  <view class="disclaimer">
+    本配对结果仅供娱乐参考，请勿据此做重要决策。
+  </view>
+</view>

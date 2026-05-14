@@ -1,0 +1,40 @@
+<view class="container">
+  <view class="hero">
+    <view class="hero-emoji">🖐️✨</view>
+    <view class="hero-title">掌相奇缘</view>
+    <view class="hero-sub">AI 解读，趣味占卜</view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">选择解读范围</view>
+    <view class="chip-row">
+      <view
+        wx:for="{{scopes}}"
+        wx:key="key"
+        class="chip {{activeScope === item.key ? 'chip-active' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onScopeTap"
+      >{{item.label}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">手掌照片</view>
+    <view class="preview">
+      <image wx:if="{{imagePath}}" src="{{imagePath}}" mode="aspectFill" />
+      <text wx:else class="muted">尚未选择照片</text>
+    </view>
+    <view class="btn-row">
+      <button class="btn-secondary" bindtap="chooseFromCamera">📷 拍照</button>
+      <button class="btn-secondary" bindtap="chooseFromAlbum">🖼️ 相册</button>
+    </view>
+  </view>
+
+  <button class="btn-primary" bindtap="analyze" disabled="{{loading}}">
+    {{loading ? '解读中...' : '开始解读'}}
+  </button>
+
+  <view class="disclaimer">
+    本解读仅供娱乐参考，结果由 AI 生成，请勿据此做重要决策。
+  </view>
+</view>

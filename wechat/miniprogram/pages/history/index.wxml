@@ -1,0 +1,20 @@
+<view class="container">
+  <view class="hero">
+    <view class="hero-emoji">📜</view>
+    <view class="hero-title">历史记录</view>
+  </view>
+
+  <view wx:if="{{!list.length}}" class="card">
+    <view class="card-text muted">还没有解读记录，去解读或配对一次吧。</view>
+  </view>
+
+  <block wx:for="{{list}}" wx:key="id">
+    <view class="card" bindtap="openItem" data-id="{{item.id}}">
+      <view class="card-title">{{item.title}}</view>
+      <view class="card-text">{{item.subtitle}}</view>
+      <view class="muted" style="margin-top: 10rpx;">{{item.dateStr}}</view>
+    </view>
+  </block>
+
+  <button wx:if="{{list.length}}" class="btn-secondary" bindtap="clearAll" style="margin-top: 24rpx;">清空记录</button>
+</view>

@@ -1,0 +1,33 @@
+<view class="container" wx:if="{{result}}">
+  <view class="hero">
+    <view class="hero-emoji">💫</view>
+    <view class="hero-title">{{typeLabel}}</view>
+    <view style="margin-top: 18rpx;">
+      <text class="score-badge">{{result.score}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">总览</view>
+    <view class="card-text">{{result.summary}}</view>
+  </view>
+
+  <view class="card" wx:if="{{result.strengths && result.strengths.length}}">
+    <view class="card-title">✨ 优势</view>
+    <view wx:for="{{result.strengths}}" wx:key="*this" class="card-text" style="margin-bottom: 6rpx;">• {{item}}</view>
+  </view>
+
+  <view class="card" wx:if="{{result.tensions && result.tensions.length}}">
+    <view class="card-title">⚡ 张力</view>
+    <view wx:for="{{result.tensions}}" wx:key="*this" class="card-text" style="margin-bottom: 6rpx;">• {{item}}</view>
+  </view>
+
+  <view class="card" wx:if="{{result.advice && result.advice.length}}">
+    <view class="card-title">💡 建议</view>
+    <view wx:for="{{result.advice}}" wx:key="*this" class="card-text" style="margin-bottom: 6rpx;">• {{item}}</view>
+  </view>
+
+  <view class="disclaimer">{{result.disclaimer}}</view>
+
+  <button class="btn-secondary" bindtap="goHome" style="margin-top: 24rpx;">返回</button>
+</view>
