@@ -5,12 +5,29 @@ enum APIError: LocalizedError {
     case server(String)
     case invalidImage
     case badResponse
+    case network(URLError, host: String)
+    case transport(String)
 
     var errorDescription: String? {
         switch self {
         case .server(let msg): return msg
         case .invalidImage: return "Could not read the selected image."
         case .badResponse: return "Unexpected server response."
+        case .network(let error, let host):
+            switch error.code {
+            case .notConnectedToInternet:
+                return "No internet connection. Please connect and try again."
+            case .timedOut:
+                return "The request timed out while contacting \(host)."
+            case .cannotFindHost, .cannotConnectToHost, .dnsLookupFailed:
+                return "Could not reach \(host). Please try again in a moment."
+            case .secureConnectionFailed, .serverCertificateHasBadDate, .serverCertificateUntrusted:
+                return "A secure connection to \(host) could not be established."
+            default:
+                return "Network error (\(error.code.rawValue)) while contacting \(host)."
+            }
+        case .transport(let msg):
+            return msg
         }
     }
 }
@@ -82,13 +99,22 @@ final class APIClient {
     }()
 
     private func postMultipart<T: Decodable>(path: String, form: MultipartFormData) async throws -> T {
-        var request = URLRequest(url: baseURL.appendingPathComponent(path))
+        let requestURL = baseURL.appendingPathComponent(path)
+        var request = URLRequest(url: requestURL)
         request.httpMethod = "POST"
         request.timeoutInterval = 60
         request.setValue(form.contentType, forHTTPHeaderField: "Content-Type")
         request.httpBody = form.finalize()
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await URLSession.shared.data(for: request)
+        } catch let error as URLError {
+            throw APIError.network(error, host: requestURL.host ?? baseURL.host ?? "server")
+        } catch {
+            throw APIError.transport("Request failed: \(error.localizedDescription)")
+        }
         guard let http = response as? HTTPURLResponse else { throw APIError.badResponse }
         guard (200..<300).contains(http.statusCode) else {
             let message = String(data: data, encoding: .utf8) ?? "Server returned \(http.statusCode)"
