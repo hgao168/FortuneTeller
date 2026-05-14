@@ -95,6 +95,11 @@ jobs:
           echo "CURRENT_PROJECT_VERSION=$BUILD_NUMBER" >> "$GITHUB_ENV"
           echo "Using CURRENT_PROJECT_VERSION=$BUILD_NUMBER"
 
+      - name: Stamp CFBundleVersion for CI
+        run: |
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $CURRENT_PROJECT_VERSION" ios/FortuneTeller/Info.plist
+          /usr/libexec/PlistBuddy -c "Print :CFBundleVersion" ios/FortuneTeller/Info.plist
+
       - name: Archive app (Release configuration → production backend)
         run: |
           xcodebuild archive \
@@ -108,8 +113,7 @@ jobs:
             CODE_SIGN_IDENTITY="Apple Distribution" \
             PROVISIONING_PROFILE_SPECIFIER="FortuneTeller888" \
             BACKEND_BASE_URL="https://fortuneteller-production-f93e.up.railway.app" \
-            CURRENT_PROJECT_VERSION="$CURRENT_PROJECT_VERSION" \
-            INFOPLIST_KEY_CFBundleVersion="$CURRENT_PROJECT_VERSION"
+            CURRENT_PROJECT_VERSION="$CURRENT_PROJECT_VERSION"
 
       - name: Export IPA
         run: |
