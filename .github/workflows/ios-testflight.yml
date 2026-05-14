@@ -29,6 +29,23 @@ jobs:
           sudo xcode-select -s "$LATEST/Contents/Developer"
           xcodebuild -version
 
+      - name: Validate required secrets
+        env:
+          IOS_DISTRIBUTION_P12_BASE64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+        run: |
+          for var in IOS_DISTRIBUTION_P12_BASE64 IOS_CERTIFICATE_PASSWORD BUILD_PROVISION_PROFILE_BASE64 APPLE_TEAM_ID APP_STORE_CONNECT_API_KEY APP_STORE_CONNECT_API_KEY_ID APP_STORE_CONNECT_API_ISSUER_ID; do
+            if [ -z "${!var}" ]; then
+              echo "::error::Missing required secret: $var"
+              exit 1
+            fi
+          done
+
       - name: Create temporary keychain
         run: |
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
@@ -41,7 +58,7 @@ jobs:
         run: |
           CERTIFICATE_PATH=$RUNNER_TEMP/distribution.p12
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-          echo "${{ secrets.ios_distribution_p12_base64 }}" | base64 --decode > "$CERTIFICATE_PATH"
+          echo "${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}" | base64 --decode > "$CERTIFICATE_PATH"
           security import "$CERTIFICATE_PATH" \
             -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" \
             -A -t cert -f pkcs12 \
@@ -54,7 +71,7 @@ jobs:
       - name: Install provisioning profile
         run: |
           PP_PATH=$RUNNER_TEMP/profile.mobileprovision
-          echo "${{ secrets.IOS_PROVISION_PROFILE }}" | base64 --decode > "$PP_PATH"
+          echo "${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}" | base64 --decode > "$PP_PATH"
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           PROFILE_UUID=$(openssl smime -inform der -verify -noverify -in "$PP_PATH" 2>/dev/null \
             | python3 -c "import plistlib, sys; pl = plistlib.loads(sys.stdin.buffer.read()); print(pl['UUID'])")
@@ -130,14 +147,14 @@ jobs:
         run: |
           mkdir -p ~/.appstoreconnect/private_keys/
           echo "${{ secrets.APP_STORE_CONNECT_API_KEY }}" | base64 --decode \
-            > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8
+            > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
           xcrun altool --upload-app \
             --type ios \
             --file "$IPA_PATH" \
-            --apiKey "${{ secrets.APP_STORE_CONNECT_KEY_ID }}" \
-            --apiIssuer "${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}" \
+            --apiKey "${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}" \
+            --apiIssuer "${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}" \
             --verbose
-          rm -f ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8
+          rm -f ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
 
       - name: Clean up keychain and provisioning profile
         if: always()
