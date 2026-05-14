@@ -21,6 +21,9 @@ struct MatchView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
 
+    private var romanticColor: Color { .pink }
+    private var friendColor: Color { .blue }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -29,12 +32,7 @@ struct MatchView: View {
                         .font(.title2.weight(.semibold))
                         .multilineTextAlignment(.center)
 
-                    Picker("match.type", selection: $matchType) {
-                        ForEach(MatchType.allCases) { mode in
-                            Text(mode.localizedKey).tag(mode)
-                        }
-                    }
-                    .pickerStyle(.segmented)
+                    matchTypeSelector
 
                     VStack(spacing: 10) {
                         DatePicker(
@@ -50,8 +48,8 @@ struct MatchView: View {
                     }
 
                     HStack(spacing: 12) {
-                        imageCard(image: firstImage, title: "match.person1")
-                        imageCard(image: secondImage, title: "match.person2")
+                        imageCard(image: firstImage, title: "match.person1", accent: .blue)
+                        imageCard(image: secondImage, title: "match.person2", accent: .pink)
                     }
 
                     VStack(spacing: 10) {
@@ -159,7 +157,36 @@ struct MatchView: View {
         }
     }
 
-    private func imageCard(image: UIImage?, title: LocalizedStringKey) -> some View {
+    private var matchTypeSelector: some View {
+        HStack(spacing: 10) {
+            matchTypeChip(type: .romantic, color: romanticColor)
+            matchTypeChip(type: .friend, color: friendColor)
+        }
+    }
+
+    private func matchTypeChip(type: MatchType, color: Color) -> some View {
+        let selected = matchType == type
+        return Button {
+            matchType = type
+        } label: {
+            Text(type.localizedKey)
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .foregroundStyle(selected ? .white : color)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(selected ? color : color.opacity(0.14))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .stroke(color.opacity(0.35), lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func imageCard(image: UIImage?, title: LocalizedStringKey, accent: Color) -> some View {
         VStack(spacing: 8) {
             if let image {
                 Image(uiImage: image)
@@ -180,8 +207,11 @@ struct MatchView: View {
                     }
             }
             Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.caption.weight(.semibold))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .foregroundStyle(accent)
+                .background(accent.opacity(0.16), in: Capsule())
         }
         .frame(maxWidth: .infinity)
     }

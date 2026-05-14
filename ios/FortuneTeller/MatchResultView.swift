@@ -16,8 +16,8 @@ struct MatchResultView: View {
                         .font(.subheadline.weight(.semibold))
                         .padding(.vertical, 6)
                         .padding(.horizontal, 12)
-                        .background(Color.purple.opacity(0.15))
-                        .foregroundColor(.purple)
+                        .background(matchTypeColor.opacity(0.15))
+                        .foregroundColor(matchTypeColor)
                         .clipShape(Capsule())
                     Spacer()
                     Text("\(response.score)%")
@@ -90,12 +90,21 @@ struct MatchResultView: View {
                     saved = true
                 } label: {
                     Label(
-                        saved ? String(localized: "button.saved") : String(localized: "button.save"),
+                        saved ? LanguageRuntime.localized("button.saved") : LanguageRuntime.localized("button.save"),
                         systemImage: saved ? "checkmark.circle.fill" : "square.and.arrow.down"
                     )
                 }
                 .disabled(saved)
             }
+        }
+    }
+
+    private var matchTypeColor: Color {
+        switch response.matchType {
+        case .romantic:
+            return .pink
+        case .friend:
+            return .blue
         }
     }
 }

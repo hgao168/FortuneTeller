@@ -58,14 +58,11 @@ struct ReadTabView: View {
             .navigationTitle("")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("app.name")
-                            .font(.headline.weight(.bold))
-                            .foregroundStyle(.white)
-                        Text("app.nav.subtitle")
-                            .font(.caption)
-                            .foregroundStyle(.white.opacity(0.65))
-                    }
+                    Text("app.name")
+                        .font(.headline.weight(.bold))
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.72)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     LanguageMenu()

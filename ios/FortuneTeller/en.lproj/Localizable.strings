@@ -43,6 +43,8 @@
 /* Match */
 "match.title" = "Compare two palms for compatibility";
 "match.type" = "Match Type";
+"match.romantic" = "Romantic";
+"match.friend" = "Friendship";
 "match.person1" = "Person A";
 "match.person2" = "Person B";
 "match.birth.person1" = "Person A Birth Date & Time";

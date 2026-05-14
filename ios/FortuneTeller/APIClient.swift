@@ -58,6 +58,7 @@ final class APIClient {
 
         var form = MultipartFormData()
         form.appendField("scope", value: scope.rawValue)
+        form.appendField("language", value: LanguageRuntime.currentAPILanguageCode)
         if let userID, !userID.isEmpty {
             form.appendField("user_id", value: userID)
         }
@@ -82,6 +83,7 @@ final class APIClient {
 
         var form = MultipartFormData()
         form.appendField("match_type", value: matchType.rawValue)
+        form.appendField("language", value: LanguageRuntime.currentAPILanguageCode)
         form.appendField("person_a_birth", value: APIClient.isoFormatter.string(from: personABirth))
         form.appendField("person_b_birth", value: APIClient.isoFormatter.string(from: personBBirth))
         form.appendFile("image_a", filename: "palm-a.jpg", data: jpegA)

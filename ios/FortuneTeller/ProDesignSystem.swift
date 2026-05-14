@@ -35,6 +35,18 @@ enum AppLanguage: String, CaseIterable, Identifiable {
         case .chinese: return "zh-Hans"
         }
     }
+
+    var apiLanguageCode: String {
+        switch self {
+        case .chinese:
+            return "zh-Hans"
+        case .english:
+            return "en"
+        case .system:
+            let preferred = Locale.preferredLanguages.first?.lowercased() ?? "en"
+            return preferred.hasPrefix("zh") ? "zh-Hans" : "en"
+        }
+    }
 }
 
 // MARK: - Runtime language override
@@ -66,6 +78,12 @@ enum LanguageRuntime {
     static func apply(_ language: AppLanguage) {
         _ = installOverride
         currentLProj = language.lprojCode
+    }
+
+    static var currentAPILanguageCode: String {
+        let raw = UserDefaults.standard.string(forKey: "app.language") ?? AppLanguage.system.rawValue
+        let language = AppLanguage(rawValue: raw) ?? .system
+        return language.apiLanguageCode
     }
 
     /// Returns a localized string using the active in-app language.

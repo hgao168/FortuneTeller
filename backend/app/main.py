@@ -50,6 +50,7 @@ async def health() -> dict:
 async def analyze_palm(
     image: UploadFile = File(...),
     scope: str = Form(...),
+    language: Optional[str] = Form(None),
     user_id: Optional[str] = Form(None),
 ) -> PalmReadingResponse:
     if scope not in ALLOWED_SCOPES:
@@ -66,7 +67,7 @@ async def analyze_palm(
         raise HTTPException(status_code=413, detail="Image too large (max 8 MB)")
 
     try:
-        return await analyze_palm_image(payload, scope)  # type: ignore[arg-type]
+        return await analyze_palm_image(payload, scope, language)  # type: ignore[arg-type]
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:  # noqa: BLE001
@@ -78,6 +79,7 @@ async def match_palm(
     image_a: UploadFile = File(...),
     image_b: UploadFile = File(...),
     match_type: str = Form(...),
+    language: Optional[str] = Form(None),
     person_a_birth: str = Form(...),
     person_b_birth: str = Form(...),
 ) -> PalmMatchResponse:
@@ -107,6 +109,7 @@ async def match_palm(
             match_type,  # type: ignore[arg-type]
             person_a_birth,
             person_b_birth,
+            language,
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc

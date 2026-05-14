@@ -36,10 +36,19 @@ def _scope_prompt(scope: ReadingScope) -> str:
     )
 
 
-def _build_prompt(scope: ReadingScope) -> str:
+def _lang_prompt(language: str | None) -> str:
+    normalized = (language or "").lower()
+    if normalized.startswith("zh"):
+        return "Use Simplified Chinese for all output text."
+    return "Use English for all output text."
+
+
+def _build_prompt(scope: ReadingScope, language: str | None) -> str:
     return (
         "You are a friendly palmistry guide. Analyze the provided palm image. "
         + _scope_prompt(scope)
+        + " "
+        + _lang_prompt(language)
         + " Respond ONLY as compact JSON with this exact schema: "
         + '{"summary": str, "sections": [{"title": str, "text": str}], '
         + '"advice": [str]}. '
@@ -49,7 +58,8 @@ def _build_prompt(scope: ReadingScope) -> str:
     )
 
 
-def _fallback(scope: ReadingScope) -> PalmReadingResponse:
+def _fallback(scope: ReadingScope, language: str | None) -> PalmReadingResponse:
+    is_zh = (language or "").lower().startswith("zh")
     horizon_map = {
         "today": "today",
         "month": "this month",
@@ -57,6 +67,38 @@ def _fallback(scope: ReadingScope) -> PalmReadingResponse:
         "long_term": "the long arc of life",
     }
     horizon = horizon_map.get(scope, "the year ahead")
+
+    if is_zh:
+        sections: List[PalmReadingSection] = [
+            PalmReadingSection(
+                title="事业",
+                text="近期事业重心在于稳中求进，持续学习会带来更明确的机会与方向。",
+            ),
+            PalmReadingSection(
+                title="感情",
+                text="坦诚表达会让关系更有安全感，旧识中可能出现值得重新连接的人。",
+            ),
+            PalmReadingSection(
+                title="健康",
+                text="节奏感是关键，规律作息与补水会比短期高强度更有效。",
+            ),
+            PalmReadingSection(
+                title="财富",
+                text="财运偏向长期积累，避免冲动决策，重视稳健与计划性。",
+            ),
+        ]
+        return PalmReadingResponse(
+            scope=scope,
+            summary="整体运势偏稳，属于厚积薄发阶段，持续行动会逐步显现回报。",
+            sections=sections,
+            advice=[
+                "选一个可以坚持 90 天的小习惯。",
+                "把一场拖延已久的沟通尽快完成。",
+                "每周固定记录一次收支与计划。",
+            ],
+            disclaimer="本解读仅供娱乐参考，不构成医疗、财务、心理或法律建议。",
+        )
+
     sections: List[PalmReadingSection] = [
         PalmReadingSection(
             title="Career",
@@ -103,11 +145,11 @@ def _fallback(scope: ReadingScope) -> PalmReadingResponse:
     )
 
 
-def _parse(content: str, scope: ReadingScope) -> PalmReadingResponse:
+def _parse(content: str, scope: ReadingScope, language: str | None) -> PalmReadingResponse:
     data = parse_json_payload(content)
     if not data:
-        return _fallback(scope)
-    fallback = _fallback(scope)
+        return _fallback(scope, language)
+    fallback = _fallback(scope, language)
     sections = [
         PalmReadingSection(title=s.get("title", ""), text=s.get("text", ""))
         for s in data.get("sections", [])
@@ -119,19 +161,23 @@ def _parse(content: str, scope: ReadingScope) -> PalmReadingResponse:
         summary=str(data.get("summary", "")).strip() or "Reading completed.",
         sections=sections or fallback.sections,
         advice=advice or fallback.advice,
-        disclaimer=DISCLAIMER,
+        disclaimer=fallback.disclaimer,
     )
 
 
-async def analyze_palm_image(image_bytes: bytes, scope: ReadingScope) -> PalmReadingResponse:
+async def analyze_palm_image(
+    image_bytes: bytes,
+    scope: ReadingScope,
+    language: str | None = None,
+) -> PalmReadingResponse:
     validate_image_bytes(image_bytes)
 
     if not os.getenv("OPENAI_API_KEY"):
-        return _fallback(scope)
+        return _fallback(scope, language)
 
     try:
         b64 = base64.b64encode(image_bytes).decode("ascii")
-        content = await call_openai_vision(_build_prompt(scope), [b64])
-        return _parse(content, scope)
+        content = await call_openai_vision(_build_prompt(scope, language), [b64])
+        return _parse(content, scope, language)
     except Exception:  # noqa: BLE001 - never fail the request on provider errors
-        return _fallback(scope)
+        return _fallback(scope, language)
