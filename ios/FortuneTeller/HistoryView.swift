@@ -26,18 +26,38 @@ struct HistoryView: View {
                 }
             }
             .navigationTitle(Text("nav.history"))
-            .navigationDestination(item: $selected) { reading in
-                switch reading.content {
-                case .palm(let response):
-                    ReadingResultView(response: response, palmImage: reading.thumbnailImage)
-                case .match(let response):
-                    MatchResultView(
-                        response: response,
-                        imageA: reading.thumbnailImage,
-                        imageB: reading.secondaryThumbnailImage
-                    )
+            .navigationDestination(isPresented: isShowingSelection) {
+                if let reading = selected {
+                    destinationView(for: reading)
+                } else {
+                    EmptyView()
                 }
             }
+        }
+    }
+
+    private var isShowingSelection: Binding<Bool> {
+        Binding(
+            get: { selected != nil },
+            set: { isPresented in
+                if !isPresented {
+                    selected = nil
+                }
+            }
+        )
+    }
+
+    @ViewBuilder
+    private func destinationView(for reading: SavedReading) -> some View {
+        switch reading.content {
+        case .palm(let response):
+            ReadingResultView(response: response, palmImage: reading.thumbnailImage)
+        case .match(let response):
+            MatchResultView(
+                response: response,
+                imageA: reading.thumbnailImage,
+                imageB: reading.secondaryThumbnailImage
+            )
         }
     }
 
