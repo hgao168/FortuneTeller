@@ -82,7 +82,7 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }} \
             CODE_SIGN_IDENTITY="Apple Distribution" \
-            PROVISIONING_PROFILE_SPECIFIER="FortuneTeller-Prod" \
+            PROVISIONING_PROFILE_SPECIFIER="FortuneTeller888" \
             BACKEND_BASE_URL="https://fortuneteller-production-f93e.up.railway.app" \
             CURRENT_PROJECT_VERSION="$CURRENT_PROJECT_VERSION"
 
@@ -106,7 +106,7 @@ jobs:
             <key>provisioningProfiles</key>
             <dict>
               <key>ai.movenova.fortuneteller</key>
-              <string>FortuneTeller-Prod</string>
+              <string>FortuneTeller888</string>
             </dict>
           </dict>
           </plist>
