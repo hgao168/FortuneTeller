@@ -56,13 +56,20 @@ jobs:
           PP_PATH=$RUNNER_TEMP/profile.mobileprovision
           echo "${{ secrets.IOS_PROVISION_PROFILE }}" | base64 --decode > "$PP_PATH"
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          PROFILE_UUID=$(security cms -D -i "$PP_PATH" | python3 -c "import plistlib, sys; pl = plistlib.loads(sys.stdin.buffer.read()); print(pl['UUID'])")
+          PROFILE_UUID=$(openssl smime -inform der -verify -noverify -in "$PP_PATH" 2>/dev/null \
+            | python3 -c "import plistlib, sys; pl = plistlib.loads(sys.stdin.buffer.read()); print(pl['UUID'])")
           cp "$PP_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/"$PROFILE_UUID".mobileprovision
           echo "PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
           echo "Installed provisioning profile UUID: $PROFILE_UUID"
 
       - name: Generate Xcode project
         run: xcodegen generate --spec ios/project.yml
+
+      - name: Set CI build number
+        run: |
+          BUILD_NUMBER="${{ github.run_number }}"
+          echo "CURRENT_PROJECT_VERSION=$BUILD_NUMBER" >> "$GITHUB_ENV"
+          echo "Using CURRENT_PROJECT_VERSION=$BUILD_NUMBER"
 
       - name: Archive app (Release configuration → production backend)
         run: |
@@ -77,7 +84,7 @@ jobs:
             CODE_SIGN_IDENTITY="Apple Distribution" \
             PROVISIONING_PROFILE_SPECIFIER="FortuneTeller-Prod" \
             BACKEND_BASE_URL="https://fortuneteller-production-f93e.up.railway.app" \
-            CURRENT_PROJECT_VERSION="1"
+            CURRENT_PROJECT_VERSION="$CURRENT_PROJECT_VERSION"
 
       - name: Export IPA
         run: |
