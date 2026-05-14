@@ -151,17 +151,68 @@ jobs:
           retention-days: 30
 
       - name: Upload to TestFlight
+        env:
+          ASC_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+          ASC_API_KEY_ID_RAW: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          ASC_API_ISSUER_ID_RAW: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
         run: |
+          set -o pipefail
+
+          # Strip any accidental whitespace / newlines pasted into the secret values.
+          ASC_API_KEY_ID="$(printf '%s' "$ASC_API_KEY_ID_RAW" | tr -d '[:space:]')"
+          ASC_API_ISSUER_ID="$(printf '%s' "$ASC_API_ISSUER_ID_RAW" | tr -d '[:space:]')"
+
+          # Non-sensitive diagnostics: lengths only, so we can see if the
+          # secrets are obviously empty / wrong size without leaking values.
+          echo "APP_STORE_CONNECT_API_KEY_ID length: ${#ASC_API_KEY_ID}"
+          echo "APP_STORE_CONNECT_API_ISSUER_ID length: ${#ASC_API_ISSUER_ID}"
+          if [ "${#ASC_API_KEY_ID}" -ne 10 ]; then
+            echo "::error::APP_STORE_CONNECT_API_KEY_ID must be exactly 10 characters (got ${#ASC_API_KEY_ID})."
+            exit 1
+          fi
+          if [ "${#ASC_API_ISSUER_ID}" -ne 36 ]; then
+            echo "::error::APP_STORE_CONNECT_API_ISSUER_ID must be a 36-character UUID (got ${#ASC_API_ISSUER_ID})."
+            exit 1
+          fi
+
           mkdir -p ~/.appstoreconnect/private_keys/
-          echo "${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}" | base64 --decode \
-            > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
+          KEY_PATH=~/.appstoreconnect/private_keys/AuthKey_${ASC_API_KEY_ID}.p8
+          printf '%s' "$ASC_API_KEY_BASE64" | base64 --decode > "$KEY_PATH"
+
+          if ! grep -q "BEGIN PRIVATE KEY" "$KEY_PATH"; then
+            echo "::error::Decoded App Store Connect API key is not a valid PEM .p8 file."
+            rm -f "$KEY_PATH"
+            exit 1
+          fi
+          echo "Wrote API key to: $KEY_PATH ($(wc -l < "$KEY_PATH") lines)"
+
+          ALTOOL_LOG="$RUNNER_TEMP/altool.log"
+          set +e
           xcrun altool --upload-app \
             --type ios \
             --file "$IPA_PATH" \
-            --apiKey "${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}" \
-            --apiIssuer "${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}" \
-            --verbose
-          rm -f ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
+            --apiKey "$ASC_API_KEY_ID" \
+            --apiIssuer "$ASC_API_ISSUER_ID" \
+            --verbose 2>&1 | tee "$ALTOOL_LOG"
+          ALTOOL_STATUS=${PIPESTATUS[0]}
+          set -e
+
+          rm -f "$KEY_PATH"
+
+          # altool sometimes exits 0 even when Apple returns 401, so we
+          # explicitly fail on auth / upload errors found in the log.
+          if [ "$ALTOOL_STATUS" -ne 0 ]; then
+            echo "::error::altool exited with status $ALTOOL_STATUS"
+            exit "$ALTOOL_STATUS"
+          fi
+          if grep -E "NOT_AUTHORIZED|status code: 401|failed to authenticate" "$ALTOOL_LOG" >/dev/null; then
+            echo "::error::App Store Connect rejected the API credentials (401 NOT_AUTHORIZED). Verify APP_STORE_CONNECT_API_KEY_ID, APP_STORE_CONNECT_API_ISSUER_ID, and APP_STORE_CONNECT_API_KEY_BASE64 all belong to the same active key with App Manager access."
+            exit 1
+          fi
+          if ! grep -E "UPLOAD SUCCEEDED|No errors uploading" "$ALTOOL_LOG" >/dev/null; then
+            echo "::error::altool did not report a successful upload. See log above."
+            exit 1
+          fi
 
       - name: Clean up keychain and provisioning profile
         if: always()
