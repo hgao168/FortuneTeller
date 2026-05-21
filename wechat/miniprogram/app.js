@@ -1,8 +1,8 @@
 // 小程序入口
 App({
   globalData: {
-    // 后端 API，部署在 Railway（与 iOS 客户端一致）
-    baseURL: 'https://fortuneteller-production-f93e.up.railway.app',
+    // TODO: Inject BACKEND_BASE_URL at build/CI time (env var or build variable placeholder)
+    baseURL: process.env.BACKEND_BASE_URL || 'https://fortuneteller-production-f93e.up.railway.app',
     // 默认中文，符合微信生态用户习惯
     language: 'zh-Hans',
     // 历史记录存储键

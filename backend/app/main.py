@@ -1,7 +1,7 @@
 import os
 from typing import Optional
 
-from fastapi import FastAPI, File, Form, HTTPException, Response, UploadFile
+from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from .analyzer import analyze_palm_image, analyze_palm_match
@@ -9,6 +9,8 @@ from .schemas import MatchType, PalmMatchResponse, PalmReadingResponse, ReadingS
 
 
 ENVIRONMENT = os.getenv("ENVIRONMENT", "production")
+API_KEY = os.getenv("API_KEY", "")
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "https://movenova.ai").split(",")
 ALLOWED_SCOPES = {"today", "month", "year", "long_term"}
 ALLOWED_MATCH_TYPES = {"romantic", "friend"}
 MAX_IMAGE_BYTES = 8 * 1024 * 1024  # 8 MB cap
@@ -18,7 +20,7 @@ app = FastAPI(title="FortuneTeller API", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,12 +48,26 @@ async def health() -> dict:
     return {"status": "ok", "env": ENVIRONMENT}
 
 
+async def verify_api_key(x_api_key: str | None = Header(None, alias="X-API-Key")) -> str:
+    """Validate API Key from X-API-Key header when API_KEY env var is configured.
+
+    If API_KEY is not set the check is skipped (backward compatibility / dev mode).
+    Otherwise the request must carry a matching X-API-Key header.
+    """
+    if not API_KEY:
+        return ""
+    if x_api_key != API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid or missing API Key")
+    return x_api_key
+
+
 @app.post("/analyze-palm", response_model=PalmReadingResponse)
 async def analyze_palm(
     image: UploadFile = File(...),
     scope: str = Form(...),
     language: Optional[str] = Form(None),
     user_id: Optional[str] = Form(None),
+    _api_key: str = Depends(verify_api_key),
 ) -> PalmReadingResponse:
     if scope not in ALLOWED_SCOPES:
         raise HTTPException(
@@ -82,6 +98,7 @@ async def match_palm(
     language: Optional[str] = Form(None),
     person_a_birth: str = Form(...),
     person_b_birth: str = Form(...),
+    _api_key: str = Depends(verify_api_key),
 ) -> PalmMatchResponse:
     if match_type not in ALLOWED_MATCH_TYPES:
         raise HTTPException(

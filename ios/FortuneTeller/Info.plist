@@ -17,7 +17,8 @@
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>BACKEND_BASE_URL</key>
-    <string>https://fortuneteller-production-f93e.up.railway.app</string>
+    <!-- TODO: Inject BACKEND_BASE_URL at CI time via PlistBuddy / build variable -->
+    <string>$(BACKEND_BASE_URL)</string>
     <key>NSCameraUsageDescription</key>
     <string>FortuneTeller uses the camera to read your palm.</string>
     <key>NSPhotoLibraryUsageDescription</key>

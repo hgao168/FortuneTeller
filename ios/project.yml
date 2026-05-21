@@ -24,7 +24,8 @@ targets:
       properties:
         UILaunchScreen:
           UIColorName: ""
-        BACKEND_BASE_URL: "https://fortuneteller-production-f93e.up.railway.app"
+        BACKEND_BASE_URL: "$(BACKEND_BASE_URL)"
+        # TODO: Inject BACKEND_BASE_URL at CI time
         NSCameraUsageDescription: "FortuneTeller uses the camera to read your palm."
         NSPhotoLibraryUsageDescription: "FortuneTeller uses your photos so you can upload a palm picture."
         CFBundleIconName: AppIcon
@@ -36,9 +37,11 @@ targets:
         CODE_SIGN_STYLE: Automatic
       configs:
         Debug:
-          BACKEND_BASE_URL: "https://fortuneteller-production-f93e.up.railway.app"
+          BACKEND_BASE_URL: "$(BACKEND_BASE_URL)"
+        # TODO: Inject BACKEND_BASE_URL at CI time
         Release:
-          BACKEND_BASE_URL: "https://fortuneteller-production-f93e.up.railway.app"
+          BACKEND_BASE_URL: "$(BACKEND_BASE_URL)"
+        # TODO: Inject BACKEND_BASE_URL at CI time
   FortuneTellerTests:
     type: bundle.unit-test
     platform: iOS
