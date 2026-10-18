@@ -459,3 +459,33 @@ stat -c %s app/build/outputs/apk/debug/app-debug.apk   # 18187200
 grep -o 'usesCleartextTraffic="true"' app/build/intermediates/merged_manifest/debug/*/AndroidManifest.xml
 # present in debug, absent in .../merged_manifest/release/*/AndroidManifest.xml
 ```
+
+## R8. D8 closure (d8509e7)
+
+**D8 — CLOSED.** Verified on `d8509e7242cc523cd30a8a25a4a955e9791ec3b1` (matches the requested revision exactly).
+
+- **Fix:** `data/Models.kt:72` → `val scoreOrNull: Int? get() = match?.score?.coerceIn(0, 100)`. The clamp
+  sits in the model, so every consumer is covered rather than one call site.
+- **No unclamped display path remains.** `ui/screens/HistoryScreen.kt` has exactly two score references
+  (L163 null-check, L171 render) and both go through `scoreOrNull`. Repo-wide, the only other render is
+  `ui/screens/MatchResultScreen.kt:131`, already clamped. `grep -rn "\.score" app/src/main` returns those
+  four lines and nothing else; `grep -rn coerceIn app/src/main` now has two hits (was one).
+  `PalmStore.kt` deserialises `saved_readings.json` into `SavedReading`, so tampered/imported history is
+  covered by the same property.
+- **New test:** `ModelsTest.savedReadingClampsOutOfRangeScore` present and passing — asserts `184 → 100`
+  and `-5 → 0`.
+- **Tests re-run** (`:app:testDebugUnitTest --offline --rerun-tasks`): BUILD SUCCESSFUL, 26 tasks executed.
+  Parsed from `app/build/test-results/testDebugUnitTest/TEST-*.xml`:
+  `ModelsTest 6/0/0/0`, `MultipartFormDataTest 6/0/0/0`, `RequestContractTest 4/0/0/0` →
+  **16 tests, 0 failures, 0 errors, 0 skipped**. Developer's claim confirmed.
+- **Diffstat `df45d25..HEAD`:** `data/Models.kt` +1/−1, `ModelsTest.kt` +14, `qa/fortune-android-acceptance.md`
+  +128 — 3 files, 143 insertions, 1 deletion. No changes outside `android/` and `qa/`.
+- **Backend contract intact:** `data/PalmRequests.kt` still emits `image`, `scope`, `language`, `user_id`
+  and `image_a`, `image_b`, `match_type`, `person_a_birth`, `person_b_birth`, `language`; the two contract
+  tests above pin these names and pass.
+- Residual observation (not a defect): the raw `match.score` field keeps the stored value (e.g. 184) in
+  memory and on re-save; only the computed `scoreOrNull` is bounded. No UI reads the raw field, so
+  nothing is user-visible.
+
+Still out of scope, unchanged: no Android emulator/device and no live backend on WSL, so this remains a
+unit-test + static verification; no native UI runtime or HTTP round-trip is claimed.
