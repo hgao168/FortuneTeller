@@ -78,6 +78,20 @@ class ModelsTest {
     }
 
     @Test
+    fun savedReadingClampsOutOfRangeScore() {
+        val high = ai.movenova.fortuneteller.data.SavedReading(
+            id = "1", createdAt = 0L, kind = ai.movenova.fortuneteller.data.SavedReading.KIND_MATCH,
+            match = ai.movenova.fortuneteller.data.PalmMatchResponse(score = 184)
+        )
+        val low = ai.movenova.fortuneteller.data.SavedReading(
+            id = "2", createdAt = 0L, kind = ai.movenova.fortuneteller.data.SavedReading.KIND_MATCH,
+            match = ai.movenova.fortuneteller.data.PalmMatchResponse(score = -5)
+        )
+        assertEquals(100, high.scoreOrNull)
+        assertEquals(0, low.scoreOrNull)
+    }
+
+    @Test
     fun scopeAndMatchTypeMapFromApiValues() {
         assertEquals(ReadingScope.MONTH, ReadingScope.fromApi("month"))
         assertEquals(ReadingScope.LONG_TERM, ReadingScope.fromApi("long_term"))

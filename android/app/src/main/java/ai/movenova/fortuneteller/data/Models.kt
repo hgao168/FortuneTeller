@@ -69,7 +69,7 @@ data class SavedReading(
     val imageBBase64: String? = null
 ) {
     val isMatch: Boolean get() = kind == KIND_MATCH
-    val scoreOrNull: Int? get() = match?.score
+    val scoreOrNull: Int? get() = match?.score?.coerceIn(0, 100)
     val titleOrSummary: String
         get() = reading?.summary ?: match?.summary ?: ""
 
