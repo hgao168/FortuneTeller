@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FortuneTeller</string>
+
+    <!-- Tabs -->
+    <string name="nav_read">解读</string>
+    <string name="nav_match">配对</string>
+    <string name="nav_history">历史</string>
+    <string name="nav_reading">您的手相解读</string>
+    <string name="nav_match_result">配对结果</string>
+
+    <!-- Read tab -->
+    <string name="app_nav_subtitle">AI 手相洞察</string>
+    <string name="app_hero_title">解锁你的下一段能量信号</string>
+    <string name="app_tagline">用心观察的手相解读</string>
+    <string name="app_subtitle">先选择时间范围，然后拍摄或选择一张清晰的手掌照片。</string>
+    <string name="app_empty_preview_title">尚未添加手掌照片</string>
+    <string name="app_empty_preview_subtitle">添加照片后，你的解读会显示在这里。</string>
+    <string name="scope_title">选择时间范围</string>
+    <string name="scope_today">今天</string>
+    <string name="scope_month">本月</string>
+    <string name="scope_year">今年</string>
+    <string name="scope_long_term">长期</string>
+
+    <!-- Actions -->
+    <string name="action_capture">拍摄手掌</string>
+    <string name="action_gallery">从相册选择</string>
+    <string name="action_analyze">解读我的手相</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_save">保存到历史</string>
+    <string name="action_saved">已保存</string>
+    <string name="action_delete">删除</string>
+    <string name="action_retake">重新拍摄</string>
+    <string name="action_close">关闭</string>
+
+    <!-- Reading -->
+    <string name="reading_analyzing">正在解读你的手相…</string>
+    <string name="reading_summary_label">总体</string>
+    <string name="reading_advice_label">建议</string>
+    <string name="result_cosmic_signal">能量信号</string>
+
+    <!-- Match -->
+    <string name="match_title">手相配对</string>
+    <string name="match_subtitle">添加双方手掌与出生时刻，获得结合八字的匹配分析。</string>
+    <string name="match_type_title">关系类型</string>
+    <string name="match_type_romantic">恋爱</string>
+    <string name="match_type_friend">友情</string>
+    <string name="match_person_a">甲 方</string>
+    <string name="match_person_b">乙 方</string>
+    <string name="match_birth_a">甲方出生日期</string>
+    <string name="match_birth_b">乙方出生日期</string>
+    <string name="match_pick_image_a">添加甲方手掌</string>
+    <string name="match_pick_image_b">添加乙方手掌</string>
+    <string name="match_analyze">开始配对</string>
+    <string name="match_analyzing">正在配对…</string>
+    <string name="match_score_label">匹配度</string>
+    <string name="match_strengths">优势</string>
+    <string name="match_tensions">摩擦点</string>
+    <string name="match_advice">建议</string>
+
+    <!-- History -->
+    <string name="history_title">历史</string>
+    <string name="history_empty">还没有保存的解读。保存一次解读后会出现在这里。</string>
+    <string name="history_score">%1$d%%</string>
+    <string name="history_saved_on">保存于 %1$s</string>
+
+    <!-- Language -->
+    <string name="language_title">语言</string>
+    <string name="language_system">跟随系统</string>
+    <string name="language_english">English</string>
+    <string name="language_chinese">简体中文</string>
+
+    <!-- Errors -->
+    <string name="error_generic">出了点问题，请重试。</string>
+    <string name="error_network">无法连接 %1$s，请检查网络。</string>
+    <string name="error_invalid_image">图片无法读取，请换一张照片。</string>
+    <string name="error_image_too_large">图片过大（上限 8 MB）。</string>
+    <string name="error_unauthorized">当前版本无权访问服务器。</string>
+    <string name="error_bad_response">服务器返回了异常响应。</string>
+
+    <string name="disclaimer_default">本解读仅供娱乐参考，不构成医疗、财务、心理或法律建议。</string>
+</resources>

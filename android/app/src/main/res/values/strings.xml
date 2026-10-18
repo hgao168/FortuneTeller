@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FortuneTeller</string>
+
+    <!-- Tabs -->
+    <string name="nav_read">Read</string>
+    <string name="nav_match">Match</string>
+    <string name="nav_history">History</string>
+    <string name="nav_reading">Your Reading</string>
+    <string name="nav_match_result">Match Result</string>
+
+    <!-- Read tab -->
+    <string name="app_nav_subtitle">AI palm insight</string>
+    <string name="app_hero_title">Reveal your next signal</string>
+    <string name="app_tagline">Palmistry, grounded in attention</string>
+    <string name="app_subtitle">Pick a horizon, then capture or choose a clear photo of your palm.</string>
+    <string name="app_empty_preview_title">No palm captured yet</string>
+    <string name="app_empty_preview_subtitle">Your reading will appear here once you add an image.</string>
+    <string name="scope_title">Choose your horizon</string>
+    <string name="scope_today">Today</string>
+    <string name="scope_month">This month</string>
+    <string name="scope_year">This year</string>
+    <string name="scope_long_term">Long term</string>
+
+    <!-- Actions -->
+    <string name="action_capture">Capture palm</string>
+    <string name="action_gallery">Choose photo</string>
+    <string name="action_analyze">Read my palm</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save to history</string>
+    <string name="action_saved">Saved</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_retake">Retake</string>
+    <string name="action_close">Close</string>
+
+    <!-- Reading -->
+    <string name="reading_analyzing">Reading your palm…</string>
+    <string name="reading_summary_label">Overview</string>
+    <string name="reading_advice_label">Advice</string>
+    <string name="result_cosmic_signal">Cosmic signal</string>
+
+    <!-- Match -->
+    <string name="match_title">Palm compatibility</string>
+    <string name="match_subtitle">Add both palms and birth moments for a BaZi-informed comparison.</string>
+    <string name="match_type_title">Relationship</string>
+    <string name="match_type_romantic">Romantic</string>
+    <string name="match_type_friend">Friendship</string>
+    <string name="match_person_a">Person A</string>
+    <string name="match_person_b">Person B</string>
+    <string name="match_birth_a">Person A birth date</string>
+    <string name="match_birth_b">Person B birth date</string>
+    <string name="match_pick_image_a">Add palm A</string>
+    <string name="match_pick_image_b">Add palm B</string>
+    <string name="match_analyze">Compare palms</string>
+    <string name="match_analyzing">Comparing palms…</string>
+    <string name="match_score_label">Compatibility</string>
+    <string name="match_strengths">Strengths</string>
+    <string name="match_tensions">Tensions</string>
+    <string name="match_advice">Advice</string>
+
+    <!-- History -->
+    <string name="history_title">History</string>
+    <string name="history_empty">No saved readings yet. Save a reading to keep it here.</string>
+    <string name="history_score">%1$d%%</string>
+    <string name="history_saved_on">Saved %1$s</string>
+
+    <!-- Language -->
+    <string name="language_title">Language</string>
+    <string name="language_system">System</string>
+    <string name="language_english">English</string>
+    <string name="language_chinese">简体中文</string>
+
+    <!-- Errors -->
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="error_network">Network error reaching %1$s</string>
+    <string name="error_invalid_image">That image could not be read. Try another photo.</string>
+    <string name="error_image_too_large">Image is too large (max 8 MB).</string>
+    <string name="error_unauthorized">This build is not authorized to reach the server.</string>
+    <string name="error_bad_response">The server returned an unexpected response.</string>
+
+    <string name="disclaimer_default">This reading is for entertainment purposes only. It is not medical, financial, psychological, or legal advice.</string>
+</resources>
