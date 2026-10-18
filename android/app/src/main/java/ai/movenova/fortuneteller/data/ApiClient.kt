@@ -51,14 +51,9 @@ class ApiClient(
         language: String?,
         userId: String? = null
     ): PalmReadingResponse = withContext(Dispatchers.IO) {
-        val form = MultipartFormData()
-            .addFile("image", "palm.jpg", "image/jpeg", imageJpeg)
-            .addField("scope", scope.apiValue)
-        language?.takeIf { it.isNotBlank() }?.let { form.addField("language", it) }
-        userId?.takeIf { it.isNotBlank() }?.let { form.addField("user_id", it) }
-
-        val body = PalmJson.parseReading(execute("$baseUrl/analyze-palm", form))
-        body
+        if (UploadLimits.exceedsCap(imageJpeg)) throw ApiError.TooLarge
+        val form = PalmRequests.analyzeForm(imageJpeg, scope, language, userId)
+        PalmJson.parseReading(execute("$baseUrl/analyze-palm", form))
     }
 
     suspend fun matchPalm(
@@ -69,14 +64,17 @@ class ApiClient(
         personBBirth: String,
         language: String?
     ): PalmMatchResponse = withContext(Dispatchers.IO) {
-        val form = MultipartFormData()
-            .addFile("image_a", "palm_a.jpg", "image/jpeg", imageAJpeg)
-            .addFile("image_b", "palm_b.jpg", "image/jpeg", imageBJpeg)
-            .addField("match_type", matchType.apiValue)
-            .addField("person_a_birth", personABirth)
-            .addField("person_b_birth", personBBirth)
-        language?.takeIf { it.isNotBlank() }?.let { form.addField("language", it) }
-
+        if (UploadLimits.exceedsCap(imageAJpeg) || UploadLimits.exceedsCap(imageBJpeg)) {
+            throw ApiError.TooLarge
+        }
+        val form = PalmRequests.matchForm(
+            imageAJpeg = imageAJpeg,
+            imageBJpeg = imageBJpeg,
+            matchType = matchType,
+            personABirth = personABirth,
+            personBBirth = personBBirth,
+            language = language
+        )
         PalmJson.parseMatch(execute("$baseUrl/match-palm", form))
     }
 

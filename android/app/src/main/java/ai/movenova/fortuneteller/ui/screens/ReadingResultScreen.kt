@@ -49,7 +49,8 @@ fun ReadingResultScreen(
     imageBytes: ByteArray?,
     store: PalmStore,
     onDone: () -> Unit,
-    alreadySaved: Boolean = false
+    alreadySaved: Boolean = false,
+    savedImageBase64: String? = null
 ) {
     val context = LocalContext.current
     var saved by remember { mutableStateOf(alreadySaved) }
@@ -75,7 +76,8 @@ fun ReadingResultScreen(
                 style = MaterialTheme.typography.labelLarge
             )
 
-            val preview = Images.imageBitmapFromBytes(imageBytes)
+            val preview = Images.imageBitmapFromBase64(savedImageBase64)
+                ?: Images.imageBitmapFromBytes(imageBytes)
             if (preview != null) {
                 Spacer(Modifier.height(14.dp))
                 Image(

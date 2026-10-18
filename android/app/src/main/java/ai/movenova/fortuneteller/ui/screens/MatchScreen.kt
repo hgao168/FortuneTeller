@@ -1,6 +1,8 @@
 package ai.movenova.fortuneteller.ui.screens
 
+import android.Manifest
 import android.app.DatePickerDialog
+import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import ai.movenova.fortuneteller.R
 import ai.movenova.fortuneteller.data.ApiClient
 import ai.movenova.fortuneteller.data.AppSettings
@@ -46,6 +49,7 @@ import ai.movenova.fortuneteller.data.Images
 import ai.movenova.fortuneteller.data.MatchType
 import ai.movenova.fortuneteller.data.PalmMatchResponse
 import ai.movenova.fortuneteller.ui.AccentAmber
+import ai.movenova.fortuneteller.ui.CaptureFiles
 import ai.movenova.fortuneteller.ui.FutureBackground
 import ai.movenova.fortuneteller.ui.GlassCard
 import ai.movenova.fortuneteller.ui.LanguageMenu
@@ -56,6 +60,7 @@ import ai.movenova.fortuneteller.ui.str
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.Calendar
 import java.util.Locale
 
@@ -82,6 +87,34 @@ fun MatchScreen(
     }
     val pickerB = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) Images.readBytes(context, uri)?.let { imageB = it; errorMessage = null }
+    }
+
+    var pendingSlot by remember { mutableStateOf(0) }
+    var pendingFile by remember { mutableStateOf<File?>(null) }
+
+    val captureLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { captured ->
+        val file = pendingFile
+        if (captured && file != null) {
+            runCatching { file.readBytes() }.getOrNull()?.let { bytes ->
+                if (pendingSlot == 0) imageA = bytes else imageB = bytes
+                errorMessage = null
+            }
+        }
+    }
+
+    fun launchCapture(slot: Int) {
+        val file = CaptureFiles.newCaptureFile(context)
+        pendingSlot = slot
+        pendingFile = file
+        captureLauncher.launch(CaptureFiles.uriFor(context, file))
+    }
+
+    val cameraPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) {
+            launchCapture(pendingSlot)
+        } else {
+            errorMessage = context.getString(R.string.error_generic)
+        }
     }
 
     fun showBirthPicker(current: String, onPicked: (String) -> Unit) {
@@ -172,12 +205,33 @@ fun MatchScreen(
                         }
                     }
                     Spacer(Modifier.height(10.dp))
-                    SecondaryButton(
-                        title = str(if (index == 0) R.string.match_pick_image_a else R.string.match_pick_image_b),
-                        onClick = {
-                            launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                        }
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        SecondaryButton(
+                            title = str(R.string.action_capture),
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                val granted = ContextCompat.checkSelfPermission(
+                                    context, Manifest.permission.CAMERA
+                                ) == PackageManager.PERMISSION_GRANTED
+                                if (granted) {
+                                    launchCapture(index)
+                                } else {
+                                    pendingSlot = index
+                                    cameraPermission.launch(Manifest.permission.CAMERA)
+                                }
+                            }
+                        )
+                        SecondaryButton(
+                            title = str(R.string.action_gallery),
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            }
+                        )
+                    }
                     Spacer(Modifier.height(10.dp))
                     OutlinedButton(
                         onClick = {

@@ -1,5 +1,6 @@
 package ai.movenova.fortuneteller.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,9 +55,17 @@ fun MatchResultScreen(
     imageBBytes: ByteArray?,
     store: PalmStore,
     onDone: () -> Unit,
-    alreadySaved: Boolean = false
+    alreadySaved: Boolean = false,
+    savedImageABase64: String? = null,
+    savedImageBBase64: String? = null
 ) {
     var saved by remember { mutableStateOf(alreadySaved) }
+    val previewA = remember(savedImageABase64, imageABytes) {
+        Images.imageBitmapFromBase64(savedImageABase64) ?: Images.imageBitmapFromBytes(imageABytes)
+    }
+    val previewB = remember(savedImageBBase64, imageBBytes) {
+        Images.imageBitmapFromBase64(savedImageBBase64) ?: Images.imageBitmapFromBytes(imageBBytes)
+    }
 
     Box(Modifier.fillMaxSize()) {
         FutureBackground()
@@ -78,6 +89,29 @@ fun MatchResultScreen(
             )
 
             Spacer(Modifier.height(18.dp))
+            if (previewA != null || previewB != null) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    listOf(previewA, previewB).forEach { bitmap ->
+                        if (bitmap != null) {
+                            Image(
+                                bitmap = bitmap,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(120.dp)
+                                    .clip(RoundedCornerShape(18.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Spacer(Modifier.weight(1f))
+                        }
+                    }
+                }
+                Spacer(Modifier.height(14.dp))
+            }
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -94,7 +128,7 @@ fun MatchResultScreen(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                "${response?.score ?: 0}%",
+                                "${(response?.score ?: 0).coerceIn(0, 100)}%",
                                 color = Color.White,
                                 fontSize = 40.sp,
                                 fontWeight = FontWeight.Bold

@@ -42,6 +42,14 @@ class PalmStore(context: Context) {
     }.getOrDefault(emptyList())
 
     private fun persist() {
-        runCatching { file.writeText(PalmJson.json.encodeToString(_readings.value)) }
+        // Atomic-ish write: a partial write must not wipe the whole history file.
+        runCatching {
+            val temp = File(file.absolutePath + ".tmp")
+            temp.writeText(PalmJson.json.encodeToString(_readings.value))
+            if (!temp.renameTo(file)) {
+                file.writeText(temp.readText())
+                temp.delete()
+            }
+        }
     }
 }

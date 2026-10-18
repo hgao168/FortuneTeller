@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug-only manifest overlay.
+  The default BACKEND_BASE_URL is http://10.0.2.2:8000 (emulator loopback), which is cleartext.
+  targetSdk 36 denies cleartext by default, so without this the debug build cannot reach a local
+  backend at all. Release builds keep the platform default (cleartext denied) — QA defect D1.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application android:usesCleartextTraffic="true" />
+
+</manifest>

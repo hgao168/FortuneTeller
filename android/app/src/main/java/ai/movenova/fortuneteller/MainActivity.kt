@@ -189,7 +189,9 @@ private fun HistoryDetailRoute(saved: SavedReading?, store: PalmStore, onDone: (
             imageBBytes = null,
             store = store,
             onDone = onDone,
-            alreadySaved = true
+            alreadySaved = true,
+            savedImageABase64 = saved.imageBase64,
+            savedImageBBase64 = saved.imageBBase64
         )
     } else {
         ReadingResultScreen(
@@ -197,7 +199,8 @@ private fun HistoryDetailRoute(saved: SavedReading?, store: PalmStore, onDone: (
             imageBytes = null,
             store = store,
             onDone = onDone,
-            alreadySaved = true
+            alreadySaved = true,
+            savedImageBase64 = saved.imageBase64
         )
     }
 }
